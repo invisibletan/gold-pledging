@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django_enumfield import enum
+from django.conf import settings
 # Create your models here.
 class PledgingType(enum.Enum):
     expired = 0
@@ -8,7 +9,7 @@ class PledgingType(enum.Enum):
     redeem = 2
 
 class Customer(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE,)
     first_name = models.CharField(null=False, max_length=255)
     last_name = models.CharField(null=False, max_length=255)
     citizen_id = models.CharField(max_length=13, null=False)
