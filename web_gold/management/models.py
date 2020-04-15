@@ -2,11 +2,17 @@ from django.db import models
 from django.contrib.auth.models import User
 from django_enumfield import enum
 from django.conf import settings
+from django.utils.translation import ugettext_lazy
 # Create your models here.
 class PledgingType(enum.Enum):
     expired = 0
     in_contract = 1
     redeem = 2
+    __labels__ = {
+        expired: ugettext_lazy("หมดสัญญา"),
+        in_contract: ugettext_lazy("อยู่ในสัญญา"),
+        redeem: ugettext_lazy("ไถ่คืนเรียบร้อย")
+    }
 
 class Customer(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE,)
