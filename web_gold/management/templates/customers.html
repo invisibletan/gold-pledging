@@ -9,23 +9,21 @@
             value=''>
         <button type="submit" class="btn btn-outline-primary ml-2 col-md-2" value="Seacrh">ค้นหา</button>
     </form>
-    <table class="table mt-5">
+    <table class="table mt-5" style="text-align:center;">
         <thead class="thead-dark">
             <tr>
               <th scope="col">ID</th>
               <th scope="col">First Name</th>
               <th scope="col">Last Name</th>
-              <th scope="col">Expire date</th>
               <th scope="col">Handle</th>
             </tr>
           </thead>
           <tbody>
-    {% for i in pledging%}
+    {% for i in customer%}
     <tr>
         <th scope="row">{{i.id}}</th>
-        <td>{{i.cus_id.first_name}}</td>
-        <td>{{i.cus_id.last_name}}</td>
-        <td>{{i.expire_date}}</td>
+        <td>{{i.first_name}}</td>
+        <td>{{i.last_name}}</td>
         <td><button type="button" class="btn btn-primary mr-2"><i class="far fa-eye"></i></button><button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i></button></td>
     </tr>
     {% endfor %}

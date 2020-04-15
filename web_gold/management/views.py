@@ -6,10 +6,13 @@ from .models import Customer, Pledging
 def my_login(request):
     return render(request, template_name='login.html')
 
-def view_pledging(request):
+def pledging(request):
     pledging = Pledging.objects.all()
-    return render(request, 'view_pledging.html', context={'pledging': pledging})
+    return render(request, 'pledging.html', context={'pledging': pledging})
+
+def customers(request):
+    customer = Customer.objects.all()
+    return render(request, 'customers.html', context={'customer': customer})
 
 def view_customer(request):
-    customer = Customer.objects.all()
-    return render(request, 'view_customer.html', context={'customer': customer})
+    return render(request, 'view_customer.html')
