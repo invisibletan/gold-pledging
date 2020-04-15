@@ -11,5 +11,6 @@ urlpatterns = [
     path('delete_pledging/<int:pled_id>', delete_pledging, name='delete_pledging'),
     #path('add_pledging', add_pledging, name='add_pledging'),
     path('add_customer', add_customer, name='add_customer'),
+    path('edit_customer/<int:cus_id>', edit_customer, name='edit_customer'),
     
 ]

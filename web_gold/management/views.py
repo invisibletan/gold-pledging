@@ -1,7 +1,12 @@
+#def add_pledging(request):
+import email
 from builtins import object
+
 from django.shortcuts import redirect, render
-from .models import Customer, Pledging
+
 from .form import CustomerForm
+from .models import Customer, Pledging
+
 # Create your views here.
 
 def my_login(request):
@@ -43,5 +48,31 @@ def add_customer(request):
         form = CustomerForm(initial={
             'user_id' : request.user
         })
-    return render(request, template_name='add_customer.html',context={'form': form})
-#def add_pledging(request):
+    return render(request, template_name='add_customer.html',context={'form': form, 'status':1})
+
+def edit_customer(request, cus_id):
+    cus = Customer.objects.get(pk=cus_id)
+    msg = ''
+    if request.method == 'POST':
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            cus.first_name=request.POST.get('first_name')
+            cus.last_name=request.POST.get('last_name')
+            cus.email=request.POST.get('email')
+            cus.citizen_id=request.POST.get('citizen_id')
+            cus.dob=request.POST.get('dob')
+            cus.save()
+            msg = 'แก้ไขสำเร็จ'
+            return redirect('customers')
+        else:
+            msg = ''
+    else:
+        form = CustomerForm(initial={
+            'user_id' : request.user,
+            'first_name' : cus.first_name,
+            'last_name' : cus.last_name,
+            'email' : cus.email,
+            'citizen_id' : cus.citizen_id,
+            'dob' : cus.dob
+        })
+    return render(request, template_name='add_customer.html',context={'form': form, 'status':0, 'msg':''})
