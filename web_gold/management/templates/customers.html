@@ -24,7 +24,7 @@
         <th scope="row">{{i.id}}</th>
         <td>{{i.first_name}}</td>
         <td>{{i.last_name}}</td>
-        <td><a href="{% url 'view_customer' cus_id=i.id%}" class="btn btn-primary mr-2" ><i class="far fa-eye"></i></a><button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i></button></td>
+        <td><a href="{% url 'view_customer' cus_id=i.id%}" class="btn btn-primary mr-2" ><i class="far fa-eye"></i></a><a href="{% url 'delete_customer' cus_id=i.id%}"class="btn btn-danger"><i class="far fa-trash-alt"></i></a></td>
     </tr>
     {% endfor %}
 </tbody>

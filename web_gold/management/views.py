@@ -21,3 +21,13 @@ def view_customer(request, cus_id):
 def view_pledging(request, pled_id):
     view_pled = Pledging.objects.get(pk=pled_id)
     return render(request, 'view_pledging.html', context={'p': view_pled})
+
+def delete_customer(request, cus_id):
+    cus = Customer.objects.get(pk=cus_id)
+    cus.delete()
+    return redirect(to='customers')
+
+def delete_pledging(request, pled_id):
+    pled = Pledging.objects.get(pk=pled_id)
+    pled.delete()
+    return redirect(to='pledging')

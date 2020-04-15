@@ -15,7 +15,7 @@ class PledgingType(enum.Enum):
     }
 
 class Customer(models.Model):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE,)
+    user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     first_name = models.CharField(null=False, max_length=255)
     last_name = models.CharField(null=False, max_length=255)
     citizen_id = models.CharField(max_length=13, null=False)
@@ -24,7 +24,7 @@ class Customer(models.Model):
 
 class Pledging(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
-    cus_id = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    cus_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
     pledge_balanca = models.IntegerField(null=False)
     contract_term = models.IntegerField(null=False)
     pledge_date = models.DateField(auto_now_add=True,blank=False,null=False)
@@ -32,7 +32,7 @@ class Pledging(models.Model):
     type_pledging = enum.EnumField(PledgingType, default=PledgingType.in_contract)
 
 class Gold(models.Model):
-    pledging_id = models.ForeignKey(Pledging, on_delete=models.PROTECT)
+    pledging_id = models.ForeignKey(Pledging, on_delete=models.CASCADE)
     weight = models.FloatField(null=False)
 
 class Redeemed(Pledging):

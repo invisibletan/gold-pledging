@@ -26,7 +26,7 @@
         <td>{{i.cus_id.first_name}}</td>
         <td>{{i.cus_id.last_name}}</td>
         <td >{{i.expire_date}}</td>
-        <td><a href="{% url 'view_pledging' pled_id=i.id%}" class="btn btn-primary mr-2" ><i class="far fa-eye"></i></a><button type="button" class="btn btn-danger"><i class="far fa-trash-alt"></i></button></td>
+        <td><a href="{% url 'view_pledging' pled_id=i.id%}" class="btn btn-primary mr-2" ><i class="far fa-eye"></i></a><a href="{% url 'delete_pledging' pled_id=i.id%}" class="btn btn-danger"><i class="far fa-trash-alt"></i></a></td>
     </tr>
     {% endfor %}
 </tbody>
