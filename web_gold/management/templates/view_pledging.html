@@ -3,21 +3,22 @@
 {% load static %}
 <div class="container">
     <center>
-        <h3>ข้อมูลลูกค้า</h3>
+        <h3>ข้อมูลรายการจำนำทอง</h3>
     </center>
     <div class="card mt-5 border-warning ">
 
         <div class="card-body ">
                 <div class="row">
                     <div class='col-2'>
-                        <h5 >รหัสลูกค้า</h5>
+                        <h5 >รหัสจำนำทอง</h5>
                     </div>
                     <div class='col-1' style="text-align: left;">
                         <h5>: </h5>
                     </div>
                     <div class='col-8' style="text-align: left;">
-                        <h5>{{ cus.id}}</h5>
+                        <h5>{{ p.id}}</h5>
                     </div>
+           
                     <div class='col-2'>
                         <h5>ชื่อ</h5>
                     </div>
@@ -25,8 +26,9 @@
                         <h5>: </h5>
                     </div>
                     <div class='col-8' style="text-align: left;">
-                        <h5>{{ cus.first_name}}</h5>
+                        <h5>{{ p.cus_id.first_name}}</h5>
                     </div>
+          
                     <div class='col-2'>
                         <h5>นามสกุล</h5>
                     </div>
@@ -34,8 +36,9 @@
                         <h5>: </h5>
                     </div>
                     <div class='col-8' style="text-align: left;">
-                        <h5>{{ cus.last_name}}</h5>
+                        <h5>{{ p.cus_id.last_name}}</h5>
                     </div>
+ 
                     <div class='col-2'>
                         <h5>รหัสประชาชน</h5>
                     </div>
@@ -43,7 +46,18 @@
                         <h5>: </h5>
                     </div>
                     <div class='col-8' style="text-align: left;">
-                        <h5>{{ cus.citizen_id}}</h5>
+                        <h5>{{ p.cus_id.citizen_id}}</h5>
+                    </div>
+
+
+                    <div class='col-2'>
+                        <h5>อีเมล</h5>
+                    </div>
+                    <div class='col-1' style="text-align: left;">
+                        <h5>: </h5>
+                    </div>
+                    <div class='col-8' style="text-align: left;">
+                        <h5>{{ p.cus_id.email}}</h5>
                     </div>
                     <div class='col-2'>
                         <h5>อีเมล</h5>
@@ -52,16 +66,34 @@
                         <h5>: </h5>
                     </div>
                     <div class='col-8' style="text-align: left;">
-                        <h5>{{ cus.email}}</h5>
+                        <h5>{{ p.cus_id.email}}</h5>
                     </div>
                     <div class='col-2'>
-                        <h5>วันเกิด</h5>
+                        <h5>ยอดค้างชำระ</h5>
                     </div>
                     <div class='col-1' style="text-align: left;">
                         <h5>: </h5>
                     </div>
                     <div class='col-8' style="text-align: left;">
-                        <h5>{{ cus.dob}}</h5>
+                        <h5>{{ p.pledge_balanca}}</h5>
+                    </div>
+                    <div class='col-2'>
+                        <h5>วันหมดสัญญา</h5>
+                    </div>
+                    <div class='col-1' style="text-align: left;">
+                        <h5>: </h5>
+                    </div>
+                    <div class='col-8' style="text-align: left;">
+                        <h5>{{ p.expire_date}}</h5>
+                    </div>
+                    <div class='col-2'>
+                        <h5>สถานะของสัญญา</h5>
+                    </div>
+                    <div class='col-1' style="text-align: left;">
+                        <h5>: </h5>
+                    </div>
+                    <div class='col-8' style="text-align: left;">
+                        <h5>{{ p.type_pledging}}</h5>
                     </div>
                 </div>
                 
