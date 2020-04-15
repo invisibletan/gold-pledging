@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django_enumfield import enum
 from django.conf import settings
 from django.utils.translation import ugettext_lazy
+from django.core.validators import MinLengthValidator
 # Create your models here.
 class PledgingType(enum.Enum):
     expired = 0
@@ -18,8 +19,8 @@ class Customer(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     first_name = models.CharField(null=False, max_length=255)
     last_name = models.CharField(null=False, max_length=255)
-    citizen_id = models.CharField(max_length=13, null=False)
-    email = models.EmailField(max_length=254)
+    citizen_id = models.CharField(max_length=13,validators=[MinLengthValidator(13)], null=False, unique=True)
+    email = models.EmailField(max_length=254, unique=True)
     dob = models.DateField(auto_now_add=False,blank=False)
 
 class Pledging(models.Model):
@@ -39,7 +40,7 @@ class Redeemed(Pledging):
     
     first_name = models.CharField(null=False, max_length=255)
     last_name = models.CharField(null=False, max_length=255)
-    citizen_id = models.CharField(max_length=13, null=False)
+    citizen_id = models.CharField(max_length=13, null=False, unique=True)
     redeem_date = models.DateField(auto_now_add=True,blank=False,null=False)
 
 class Log(models.Model):

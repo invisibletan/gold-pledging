@@ -1,6 +1,7 @@
 from builtins import object
 from django.shortcuts import redirect, render
 from .models import Customer, Pledging
+from .form import CustomerForm
 # Create your views here.
 
 def my_login(request):
@@ -31,3 +32,16 @@ def delete_pledging(request, pled_id):
     pled = Pledging.objects.get(pk=pled_id)
     pled.delete()
     return redirect(to='pledging')
+
+def add_customer(request):
+    if request.method == 'POST':
+        form = CustomerForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            return redirect('customers')
+    else:
+        form = CustomerForm(initial={
+            'user_id' : request.user
+        })
+    return render(request, template_name='add_customer.html',context={'form': form})
+#def add_pledging(request):

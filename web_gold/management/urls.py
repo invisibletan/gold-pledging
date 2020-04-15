@@ -9,4 +9,7 @@ urlpatterns = [
     path('view_pledging/<int:pled_id>', view_pledging, name='view_pledging'),
     path('delete_customer/<int:cus_id>', delete_customer, name='delete_customer'),
     path('delete_pledging/<int:pled_id>', delete_pledging, name='delete_pledging'),
+    #path('add_pledging', add_pledging, name='add_pledging'),
+    path('add_customer', add_customer, name='add_customer'),
+    
 ]

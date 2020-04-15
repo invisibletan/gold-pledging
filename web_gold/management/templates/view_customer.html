@@ -67,6 +67,7 @@
                 
         </div>
         <a href="" class="btn btn-warning" ><i class="fas fa-edit"></i></a>
+        <a href="{% url 'delete_customer' cus_id=cus.id%}"class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
     </div>
 </div>
 {% endblock %}
