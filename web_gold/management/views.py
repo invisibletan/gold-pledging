@@ -4,8 +4,8 @@ from builtins import object
 
 from django.shortcuts import redirect, render
 
-from .form import CustomerForm
-from .models import Customer, Pledging
+from .form import CustomerForm, PledgingForm,GoldForm
+from .models import Customer, Pledging, Gold
 
 # Create your views here.
 
@@ -49,6 +49,25 @@ def add_customer(request):
             'user_id' : request.user
         })
     return render(request, template_name='add_customer.html',context={'form': form, 'status':1})
+
+def add_pledging(request):
+    if request.method == 'POST':
+        form = PledgingForm(request.POST)
+        form2 = GoldForm(request.POST)
+
+        if form.is_valid() and form2.is_valid():
+            pled = form.save()
+            gold = Gold(
+            pledging_id=Pledging.objects.get(pk=pled.id),
+            weight=request.POST.get('weight'),)
+            gold = gold.save()
+            return redirect('pledging')
+    else:
+        form = PledgingForm(initial={
+            'user_id' : request.user
+        })
+        form2 = GoldForm()
+    return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2, 'status':1})
 
 def edit_customer(request, cus_id):
     cus = Customer.objects.get(pk=cus_id)

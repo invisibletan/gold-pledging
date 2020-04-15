@@ -2,7 +2,7 @@ from django import forms
 from django.forms import ModelForm
 from django.forms.widgets import Input, DateTimeInput
 
-from .models import Customer
+from .models import Customer, Pledging, Gold
 
 
 class CustomerForm(ModelForm):
@@ -28,3 +28,35 @@ class CustomerForm(ModelForm):
        if not citizen_id.isdigit():
              self.add_error('citizen_id',"Citizen id Digit Only!!")
        return self.cleaned_data
+
+class PledgingForm(ModelForm):
+    class Meta:
+        model = Pledging
+        fields = '__all__'
+        widgets = {
+            'user_id': forms.HiddenInput(),
+            'type_pledging': forms.HiddenInput(),
+            'cus_id':Input(attrs={'class':'form-control'}),
+            'pledge_balanca':Input(attrs={'class':'form-control'}),
+            'contract_term':Input(attrs={'class':'form-control'}),
+            'expire_date':Input(attrs={'class':'form-control','type':'date'}),
+            'dob':Input(attrs={'class':'form-control','type':'date'}),
+        }
+        labels = {
+            'cus_id' : 'รหัสลูกค้า',
+            'pledge_balanca' : 'ยอดจำนำ',
+            'contract_term' : 'เวลาสัญญา ( เป็นวัน )',
+            'pledge_date' : 'วันเริ่มทำสัญญา',
+            'expire_date' : 'วันหมดสัญญา'}
+        
+class GoldForm(ModelForm):
+    class Meta:
+        model = Gold
+        fields = ['weight']
+        widgets = {
+            'weight':Input(attrs={'class':'form-control'}),
+            
+        }
+        labels = {
+            'weight' : 'น้ำหนักทอง',
+            }
