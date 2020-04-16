@@ -8,7 +8,6 @@ from .form import CustomerForm, PledgingForm,GoldForm
 from .models import Customer, Pledging, Gold
 from datetime import timedelta, date
 from django.forms import formset_factory
-from background_task import background
 # Create your views here.
 
 def my_login(request):
@@ -159,10 +158,6 @@ def edit_pledging(request, pled_id):
         })
         form2 = form2(initial=data)
     return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2,'status':0, 'msg':''})
-
-@background(schedule=3)
-def update_status():
-    print('wwww')
 
 
 def delete_gold(request, gold_id, pled_id):
