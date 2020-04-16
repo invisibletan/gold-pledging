@@ -10,8 +10,9 @@ from datetime import timedelta, date
 from django.forms import formset_factory
 # Create your views here.
 
+
+
 def my_login(request):
-    update_status()
     return render(request, template_name='login.html')
 
 def pledging(request):
