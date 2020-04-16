@@ -1,95 +1,114 @@
 {% extends "base.html" %}
 {% block content %}
 {% load static %}
+<center>
 <div class="container">
     <center>
         <h3>ข้อมูลรายการจำนำทอง</h3>
     </center>
-    <div class="card mt-5 border-warning ">
+    <div class="card mt-5 border-warning " style="text-align: center;">
 
         <div class="card-body ">
-                <div class="row">
-                    <div class='col-2'>
-                        <h5 >รหัสจำนำทอง</h5>
-                    </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
-                    </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ p.id}}</h5>
-                    </div>
-           
-                    <div class='col-2'>
-                        <h5>ชื่อ</h5>
-                    </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
-                    </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ p.cus_id.first_name}}</h5>
-                    </div>
-          
-                    <div class='col-2'>
-                        <h5>นามสกุล</h5>
-                    </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
-                    </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ p.cus_id.last_name}}</h5>
-                    </div>
- 
-                    <div class='col-2'>
-                        <h5>รหัสประชาชน</h5>
-                    </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
-                    </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ p.cus_id.citizen_id}}</h5>
-                    </div>
+            <div class='mb-3'>
+                <h4>รายละเอียดรายการจำนำ</h4>
+            </div>
+            <div class="row">
+                <div class='col-6'style="text-align: right;">
+                    <p>รหัสจำนำทอง : </p>
+                </div>
+               
+                <div class='col-6' style="text-align: left;">
+                    <p>{{ p.id}}</p>
+                </div>
 
-                    <div class='col-2'>
-                        <h5>อีเมล</h5>
-                    </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
-                    </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ p.cus_id.email}}</h5>
-                    </div>
-                    <div class='col-2'>
-                        <h5>ยอดจำนำ</h5>
-                    </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
-                    </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ p.pledge_balanca}}</h5>
-                    </div>
-                    <div class='col-2'>
-                        <h5>วันหมดสัญญา</h5>
-                    </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
-                    </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ p.expire_date}}</h5>
-                    </div>
-                    <div class='col-2'>
-                        <h5>สถานะของสัญญา</h5>
-                    </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
-                    </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ p.type_pledging.label}}</h5>
-                    </div>
+                <div class='col-6'style="text-align: right;">
+                    <p>ชื่อ : </p>
+                </div>
+               
+                <div class='col-6' style="text-align: left;">
+                    <p>{{ p.cus_id.first_name}}</p>
+                </div>
+
+                <div class='col-6'style="text-align: right;">
+                    <p>นามสกุล : </p>
                 </div>
                 
+                <div class='col-6' style="text-align: left;">
+                    <p>{{ p.cus_id.last_name}}</p>
+                </div>
+
+                <div class='col-6'style="text-align: right;">
+                    <p>รหัสประชาชน : </p>
+                </div>
+                
+                <div class='col-6' style="text-align: left;">
+                    <p>{{ p.cus_id.citizen_id}}</p>
+                </div>
+
+                <div class='col-6'style="text-align: right;">
+                    <p>อีเมล : </p>
+                </div>
+
+                <div class='col-6' style="text-align: left;">
+                    <p>{{ p.cus_id.email}}</p>
+                </div>
+                <div class='col-6'style="text-align: right;">
+                    <p>ยอดจำนำ : </p>
+                </div>
+    
+                <div class='col-6' style="text-align: left;">
+                    <p>{{ p.pledge_balanca}}</p>
+                </div>
+                <div class='col-6'style="text-align: right;">
+                    <p>วันเริ่มทำสัญญา : </p>
+                </div>
+                <div class='col-6' style="text-align: left;">
+                    <p>{{ p.pledge_date}}</p>
+                </div>
+                <div class='col-6'style="text-align: right;">
+                    <p>วันหมดสัญญา : </p>
+                </div>
+                <div class='col-6' style="text-align: left;">
+                    <p>{{ p.expire_date}}</p>
+                </div>
+                <div class='col-6'style="text-align: right;">
+                    <p>สถานะของสัญญา : </p>
+                </div>
+                <div class='col-6' style="text-align: left;">
+                    <p>{{ p.type_pledging.label}}</p>
+                </div>
+            </div>
+            <hr>
+            <div class='mb-3'>
+                <h4>ข้อมูลทองที่นำมาจำนำ</h4>
+            </div>
+
+
+
+            {% for i in gold %}
+            <div class="row">
+                <div class='col-3' style="text-align: right;">
+                    <p>ประเภท : </p>
+                </div>
+                <div class='col-3' style="text-align: left;">
+                    <p>{{i.goldtype}} </p>
+                </div>
+                <div class='col-3' style="text-align: right;">
+                    <p>น้ำหนัก : </p>
+                </div>
+                <div class='col-3' style="text-align: left;">
+                    <p>{{i.weight}} กรัม</p>
+                </div>
+
+            </div>
+            {% endfor %}
+
         </div>
-        <a href="" class="btn btn-warning" ><i class="fas fa-edit"></i></a>
+
+
+        <a href="" class="btn btn-warning"><i class="fas fa-edit"></i></a>
         <a href="{% url 'delete_pledging' pled_id=p.id%}" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
     </div>
 </div>
+</center>
 {% endblock %}

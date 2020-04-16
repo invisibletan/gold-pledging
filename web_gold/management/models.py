@@ -15,6 +15,17 @@ class PledgingType(enum.Enum):
         redeem: ugettext_lazy("ไถ่คืนเรียบร้อย")
     }
 
+class GoldType(enum.Enum):
+    necklace = 0
+    Bracelet = 1
+    ring = 2
+    bracelet = 3
+    __labels__ = {
+        necklace: ugettext_lazy("สร้อยคอ"),
+        Bracelet: ugettext_lazy("สร้อยข้อมือ"),
+        ring: ugettext_lazy("แหวน"),
+        bracelet: ugettext_lazy("กำไล"),
+    }
 class Customer(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     first_name = models.CharField(null=False, max_length=255)
@@ -34,7 +45,8 @@ class Pledging(models.Model):
 
 class Gold(models.Model):
     pledging_id = models.ForeignKey(Pledging, on_delete=models.CASCADE)
-    weight = models.FloatField(null=False)
+    weight = models.FloatField(blank=False,null=False)
+    goldtype =  enum.EnumField(GoldType, default=GoldType.necklace)
 
 class Redeemed(Pledging):
     

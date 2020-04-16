@@ -2,20 +2,41 @@
 {% block content %}
 {% load static %}
 <div class="container">
-    <center class='mb-5'>
+    <center class='mb-2'>
         {% if status %}
-        <h3 >เพิ่มข้อมูลลูกค้า</h3>
-    {% else %}
-    <h3 >แก้ไขข้อมูลลูกค้า</h3>
-    {% endif %}
-    <h5>{{msg}}</h5>
-</center>
+        <h3>เพิ่มรายการจำนำ</h3>
+        {% else %}
+        <h3>แก้ไขรายการจำนำ</h3>
+        {% endif %}
+        <h5>{{msg}}</h5>
+    </center>
     <form method="POST" action="">
         {% csrf_token %}
-    
+
         {{ form.as_p }}
-        {{ form2.as_p}}
-        <button type="submit" class="btn btn-primary ml-3"> {% if status %}เพิ่มลูกค้า{% else %}แก้ไขข้อมูล {% endif %}</button>
+        <hr>
+        <center>
+            <h5>ทองที่นำมาจำนำ </h5>
+        </center>
+        <div id="form_set">
+            {{form2.as_p}}
+        </div>
+        <button type="button" class='btn btn-primary' id="add_more">&nbsp+&nbsp </button>
+        <div id="empty_form" style="display:none">
+            <table class='no_error'>
+                {{ form2.empty_form.as_p }}
+            </table>
+        </div>
+        <br>
+        <button type="submit" class="btn btn-primary ml-3 pull-right"> {% if status %}เพิ่มรายการจำนำ{% else %}แก้ไขข้อมูล
+            {% endif %}</button>
     </form>
+    <script>
+        $('#add_more').click(function () {
+            var form_idx = $('#id_form-TOTAL_FORMS').val();
+            $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
+            $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+        });
+    </script>
 </div>
 {% endblock %}

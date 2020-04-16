@@ -7,6 +7,8 @@ from django.shortcuts import redirect, render
 from .form import CustomerForm, PledgingForm,GoldForm
 from .models import Customer, Pledging, Gold
 
+from django.forms import formset_factory
+
 # Create your views here.
 
 def my_login(request):
@@ -26,7 +28,8 @@ def view_customer(request, cus_id):
 
 def view_pledging(request, pled_id):
     view_pled = Pledging.objects.get(pk=pled_id)
-    return render(request, 'view_pledging.html', context={'p': view_pled})
+    view_gold = Gold.objects.filter(pledging_id=pled_id)
+    return render(request, 'view_pledging.html', context={'p': view_pled, 'gold': view_gold})
 
 def delete_customer(request, cus_id):
     cus = Customer.objects.get(pk=cus_id)
@@ -51,22 +54,26 @@ def add_customer(request):
     return render(request, template_name='add_customer.html',context={'form': form, 'status':1})
 
 def add_pledging(request):
+    form2 = formset_factory(GoldForm)
     if request.method == 'POST':
         form = PledgingForm(request.POST)
-        form2 = GoldForm(request.POST)
+        form2 = form2(request.POST)
 
         if form.is_valid() and form2.is_valid():
             pled = form.save()
-            gold = Gold(
-            pledging_id=Pledging.objects.get(pk=pled.id),
-            weight=request.POST.get('weight'),)
-            gold = gold.save()
+            for form in form2:
+                if form.cleaned_data.get('weight'):
+                    gold = Gold.objects.create(
+                    pledging_id=Pledging.objects.get(pk=pled.id),
+                    weight=form.cleaned_data['weight'],
+                    goldtype=form.cleaned_data['goldtype'])
+            
             return redirect('pledging')
     else:
         form = PledgingForm(initial={
             'user_id' : request.user
         })
-        form2 = GoldForm()
+        
     return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2, 'status':1})
 
 def edit_customer(request, cus_id):

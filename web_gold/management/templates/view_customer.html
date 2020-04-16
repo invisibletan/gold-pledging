@@ -8,60 +8,45 @@
     <div class="card mt-5 border-warning ">
 
         <div class="card-body ">
+            <center><div class='mb-3'>
+                <h4>รายละเอียดลูกค้า</h4>
+            </div></center>
                 <div class="row">
-                    <div class='col-2'>
-                        <h5 >รหัสลูกค้า</h5>
+                    <div class='col-6' style="text-align: right;">
+                        <p >รหัสลูกค้า : </p>
                     </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
+                    <div class='col-6' style="text-align: left;">
+                        <p>{{ cus.id}}</p>
                     </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ cus.id}}</h5>
+                    <div class='col-6' style="text-align: right;">
+                        <p>ชื่อ : </p>
                     </div>
-                    <div class='col-2'>
-                        <h5>ชื่อ</h5>
+                    <div class='col-6' style="text-align: left;">
+                        <p>{{ cus.first_name}}</p>
                     </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
+                    <div class='col-6' style="text-align: right;">
+                        <p>นามสกุล : </p>
                     </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ cus.first_name}}</h5>
+                    <div class='col-6' style="text-align: left;">
+                        <p>{{ cus.last_name}}</p>
                     </div>
-                    <div class='col-2'>
-                        <h5>นามสกุล</h5>
+                    <div class='col-6' style="text-align: right;">
+                        <p>รหัสประชาชน : </p>
                     </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
+                    <div class='col-6' style="text-align: left;">
+                        <p>{{ cus.citizen_id}}</p>
                     </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ cus.last_name}}</h5>
+                    <div class='col-6' style="text-align: right;">
+                        <p>อีเมล : </p>
                     </div>
-                    <div class='col-2'>
-                        <h5>รหัสประชาชน</h5>
+                    <div class='col-6' style="text-align: left;">
+                        <p>{{ cus.email}}</p>
                     </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
+                    <div class='col-6' style="text-align: right;">
+                        <p>วันเกิด : </p>
                     </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ cus.citizen_id}}</h5>
-                    </div>
-                    <div class='col-2'>
-                        <h5>อีเมล</h5>
-                    </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
-                    </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ cus.email}}</h5>
-                    </div>
-                    <div class='col-2'>
-                        <h5>วันเกิด</h5>
-                    </div>
-                    <div class='col-1' style="text-align: left;">
-                        <h5>: </h5>
-                    </div>
-                    <div class='col-8' style="text-align: left;">
-                        <h5>{{ cus.dob}}</h5>
+                    <div class='col-6' style="text-align: left;">
+                        <p>{{ cus.dob}}</p>
                     </div>
                 </div>
                 

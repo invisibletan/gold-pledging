@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import ModelForm
+from django.forms import ModelForm, Select
 from django.forms.widgets import Input, DateTimeInput
 
 from .models import Customer, Pledging, Gold
@@ -52,11 +52,14 @@ class PledgingForm(ModelForm):
 class GoldForm(ModelForm):
     class Meta:
         model = Gold
-        fields = ['weight']
+        fields = ['weight', 'goldtype']
         widgets = {
             'weight':Input(attrs={'class':'form-control'}),
+            'goldtype':Select(attrs={'class':'form-control'}),
             
         }
         labels = {
             'weight' : 'น้ำหนักทอง',
+            'goldtype' : 'ประเภททอง'
             }
+    
