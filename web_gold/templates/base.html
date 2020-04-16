@@ -107,7 +107,7 @@
                 </li>
 
                 <li class="nav-item text-uppercase">
-                    <a class="nav-link" href="{% url 'add_customer' %}"> Welcome</a>
+                    <a class="nav-link" href="{% url 'add_customer' %}"> เพิ่มลูกค้า</a>
                 </li>
                 
             </ul>
@@ -121,10 +121,10 @@
             <ul class="navbar-nav mr-auto">
 
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'add_pledging'%}">-----------</a>
+                    <a class="nav-link" href="{% url 'add_pledging'%}">เพิ่มจำนำ</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="">-----------</a>
+                    <a class="nav-link" href="{% url 'edit_admin' admin_id=user.id%}">แก้ไข admin</a>
                 </li>
 
                 

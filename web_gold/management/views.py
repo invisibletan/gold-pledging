@@ -1,13 +1,16 @@
 #def add_pledging(request):
 import email
 from builtins import object
+from datetime import date, timedelta
 
+from django.contrib.admin.helpers import AdminForm
+from django.forms import formset_factory
 from django.shortcuts import redirect, render
 
-from .form import CustomerForm, PledgingForm,GoldForm
-from .models import Customer, Pledging, Gold
-from datetime import timedelta, date
-from django.forms import formset_factory
+from .form import AdminForm, CustomerForm, GoldForm, PledgingForm
+from .models import Customer, Gold, Pledging
+
+from django.contrib.auth.models import User
 # Create your views here.
 
 
@@ -166,5 +169,29 @@ def delete_gold(request, gold_id, pled_id):
     gold.delete()
     return redirect('view_pledging', pled_id=pled_id)
 
-def edit_admin(request):
-    pass
+def edit_admin(request,admin_id):
+    admin = User.objects.get(pk=admin_id)
+    msg = ''
+    if request.method == 'POST':
+        form = AdminForm(request.POST)
+        if form.is_valid():
+            admin.username = form.cleaned_data['username'] 
+            admin.first_name=form.cleaned_data['first_name']
+            admin.last_name=form.cleaned_data['last_name']
+            admin.email=form.cleaned_data['email']
+            admin.password=form.cleaned_data['password1']
+            admin.save()
+            msg = 'แก้ไขสำเร็จ'
+        else:
+            msg = ''
+    else:
+        form = AdminForm(initial={
+            'admin_id': admin.id,
+            'username' : admin.username,
+            'first_name' : admin.first_name,
+            'last_name' : admin.last_name,
+            'email' : admin.email,
+            
+        })
+    context = {'form': form, 'msg': msg}
+    return render(request, 'edit_admin.html', context)
