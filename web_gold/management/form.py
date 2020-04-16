@@ -1,8 +1,9 @@
 from django import forms
 from django.forms import ModelForm, Select
-from django.forms.widgets import Input, DateTimeInput
+from django.forms.widgets import DateTimeInput, HiddenInput, Input
+from pkg_resources import require
 
-from .models import Customer, Pledging, Gold
+from .models import Customer, Gold, Pledging
 
 
 class CustomerForm(ModelForm):
@@ -50,16 +51,18 @@ class PledgingForm(ModelForm):
             'expire_date' : 'วันหมดสัญญา'}
         
 class GoldForm(ModelForm):
+    gold_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
     class Meta:
+        
         model = Gold
         fields = ['weight', 'goldtype']
         widgets = {
+            
             'weight':Input(attrs={'class':'form-control'}),
-            'goldtype':Select(attrs={'class':'form-control'}),
+            'goldtype':Select(attrs={'class':'form-control mb-5'}),
             
         }
         labels = {
             'weight' : 'น้ำหนักทอง',
             'goldtype' : 'ประเภททอง'
             }
-    

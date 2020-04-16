@@ -12,5 +12,7 @@ urlpatterns = [
     path('add_pledging', add_pledging, name='add_pledging'),
     path('add_customer', add_customer, name='add_customer'),
     path('edit_customer/<int:cus_id>', edit_customer, name='edit_customer'),
+    path('edit_pledging/<int:pled_id>', edit_pledging, name='edit_pledging'),
+    path('delete_gold/<int:gold_id>/<int:pled_id>',delete_gold, name='delete_gold')
     
 ]
