@@ -24,23 +24,17 @@ class CustomerForm(ModelForm):
             'email' : 'Email',
             'citizen_id' : 'รหัสประชาชน',
             'dob' : 'วันเกิด'}
-    def clean(self):
-       citizen_id = self.cleaned_data.get('citizen_id')
-       if not citizen_id.isdigit():
-             self.add_error('citizen_id',"Citizen id Digit Only!!")
-       return self.cleaned_data
 
 class PledgingForm(ModelForm):
     class Meta:
         model = Pledging
-        fields = '__all__'
+        exclude = ['expire_date']
         widgets = {
             'user_id': forms.HiddenInput(),
             'type_pledging': forms.HiddenInput(),
             'cus_id':Input(attrs={'class':'form-control'}),
             'pledge_balanca':Input(attrs={'class':'form-control'}),
             'contract_term':Input(attrs={'class':'form-control'}),
-            'expire_date':Input(attrs={'class':'form-control','type':'date'}),
             'dob':Input(attrs={'class':'form-control','type':'date'}),
         }
         labels = {

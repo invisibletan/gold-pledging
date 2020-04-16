@@ -6,12 +6,13 @@ from django.shortcuts import redirect, render
 
 from .form import CustomerForm, PledgingForm,GoldForm
 from .models import Customer, Pledging, Gold
-
+from datetime import timedelta, date
 from django.forms import formset_factory
-
+from background_task import background
 # Create your views here.
 
 def my_login(request):
+    update_status()
     return render(request, template_name='login.html')
 
 def pledging(request):
@@ -24,7 +25,8 @@ def customers(request):
 
 def view_customer(request, cus_id):
     view_cus = Customer.objects.get(pk=cus_id)
-    return render(request, 'view_customer.html', context={'cus': view_cus})
+    view_pledging = Pledging.objects.filter(cus_id=cus_id)
+    return render(request, 'view_customer.html', context={'cus': view_cus, 'p': view_pledging})
 
 def view_pledging(request, pled_id):
     view_pled = Pledging.objects.get(pk=pled_id)
@@ -61,6 +63,7 @@ def add_pledging(request):
 
         if form.is_valid() and form2.is_valid():
             pled = form.save()
+       
             for form in form2:
                 if form.cleaned_data.get('weight'):
                     gold = Gold.objects.create(
@@ -126,7 +129,7 @@ def edit_pledging(request, pled_id):
             pled.cus_id=Customer.objects.get(pk=request.POST.get('cus_id'))
             pled.pledge_balanca=request.POST.get('pledge_balanca')
             pled.contract_term=request.POST.get('contract_term')
-            pled.expire_date=request.POST.get('expire_date')
+            pled.expire_date=pled.pledge_date + timedelta(days=int(pled.contract_term))
             pled.save()
             
             for f in form2:
@@ -157,7 +160,15 @@ def edit_pledging(request, pled_id):
         form2 = form2(initial=data)
     return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2,'status':0, 'msg':''})
 
+@background(schedule=3)
+def update_status():
+    print('wwww')
+
+
 def delete_gold(request, gold_id, pled_id):
     gold = Gold.objects.get(pk=gold_id)
     gold.delete()
     return redirect('view_pledging', pled_id=pled_id)
+
+def edit_admin(request):
+    pass

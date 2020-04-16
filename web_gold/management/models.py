@@ -4,6 +4,8 @@ from django_enumfield import enum
 from django.conf import settings
 from django.utils.translation import ugettext_lazy
 from django.core.validators import MinLengthValidator
+from datetime import timedelta, date
+
 # Create your models here.
 class PledgingType(enum.Enum):
     expired = 0
@@ -40,8 +42,14 @@ class Pledging(models.Model):
     pledge_balanca = models.IntegerField(null=False)
     contract_term = models.IntegerField(null=False)
     pledge_date = models.DateField(auto_now_add=True,blank=False,null=False)
-    expire_date = models.DateField(auto_now_add=False,blank=False,null=False)
+    expire_date = models.DateField(auto_now_add=False,null=True)
     type_pledging = enum.EnumField(PledgingType, default=PledgingType.in_contract)
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.expire_date = date.today() + timedelta(days=self.contract_term)
+        super(Pledging, self).save(*args, **kwargs)
+
+
 
 class Gold(models.Model):
     pledging_id = models.ForeignKey(Pledging, on_delete=models.CASCADE)
