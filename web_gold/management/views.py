@@ -13,7 +13,14 @@ from .models import Customer, Gold, Pledging
 from django.contrib.auth.models import User
 # Create your views here.
 
+from background_task import background
+@background(schedule=100)
+def update_queue_status():
+    k =Pledging.objects.filter(expire_date=date.today()).update(type_pledging=0)
+    print('Run!!!')
 
+            
+update_queue_status(repeat=100)
 
 def my_login(request):
     return render(request, template_name='login.html')
@@ -106,8 +113,11 @@ def edit_customer(request, cus_id):
             return redirect('customers')
         else:
             msg = ''
+     
     else:
+        print(cus.id)
         form = CustomerForm(initial={
+            'cus_id' : cus.id,
             'user_id' : request.user,
             'first_name' : cus.first_name,
             'last_name' : cus.last_name,
@@ -115,6 +125,7 @@ def edit_customer(request, cus_id):
             'citizen_id' : cus.citizen_id,
             'dob' : cus.dob
         })
+    print(form)
     return render(request, template_name='add_customer.html',context={'form': form, 'status':0, 'msg':''})
 
 def edit_pledging(request, pled_id):
@@ -140,6 +151,8 @@ def edit_pledging(request, pled_id):
             pled.cus_id=Customer.objects.get(pk=request.POST.get('cus_id'))
             pled.pledge_balanca=request.POST.get('pledge_balanca')
             pled.contract_term=request.POST.get('contract_term')
+            if  date.today() !=date.today() + timedelta(days=int(pled.contract_term)):
+                pled.type_pledging=1
             pled.expire_date=pled.pledge_date + timedelta(days=int(pled.contract_term))
             pled.save()
             

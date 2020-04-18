@@ -63,13 +63,13 @@
                     <p>วันเริ่มทำสัญญา : </p>
                 </div>
                 <div class='col-6' style="text-align: left;">
-                    <p>{{ p.pledge_date}}</p>
+                    <p>{{ p.pledge_date|date:"d / m / Y"}}</p>
                 </div>
                 <div class='col-6'style="text-align: right;">
                     <p>วันหมดสัญญา : </p>
                 </div>
                 <div class='col-6' style="text-align: left;">
-                    <p>{{ p.expire_date}}</p>
+                    <p>{{ p.expire_date|date:"d / m / Y"}}</p>
                 </div>
                 <div class='col-6'style="text-align: right;">
                     <p>สถานะของสัญญา : </p>

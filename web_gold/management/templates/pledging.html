@@ -15,20 +15,21 @@
               <th scope="col">ID</th>
               <th scope="col">First Name</th>
               <th scope="col">Last Name</th>
-              <th scope="col">Pledge date</th>
-              <th scope="col">Expire date</th>
+              <th scope="col">Pledge Date</th>
+              <th scope="col">Expire Date</th>
+              <th scope="col">Pledging Type</th>
               <th scope="col">Handle</th>
             </tr>
           </thead>
           <tbody>
     {% for i in pledging%}
-    <tr>
-        <th scope="row">{{i.id}}</th>
+    {% ifequal i.type_pledging 0 %} <tr style="color:red"> {%else%} {% ifequal i.type_pledging 2 %} <tr style="color:blue">{% endifequal%}{% endifequal%}
+    <th scope="row">{{i.id}}</th> 
         <td>{{i.cus_id.first_name}}</td>
         <td>{{i.cus_id.last_name}}</td>
-        <td >{{i.pledge_date}}</td>
-        <td >{{i.expire_date}}</td>
-        
+        <td >{{i.pledge_date|date:"d / m / Y"}}</td>
+        <td >{{i.expire_date|date:"d / m / Y"}}</td>
+        <td >{{i.type_pledging}}</td>
         <td><a href="{% url 'view_pledging' pled_id=i.id%}" class="btn btn-primary mr-2" ><i class="far fa-eye"></i></a><a href="{% url 'delete_pledging' pled_id=i.id%}" class="btn btn-danger"><i class="far fa-trash-alt"></i></a></td>
     </tr>
     {% endfor %}

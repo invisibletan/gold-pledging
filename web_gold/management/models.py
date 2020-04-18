@@ -36,6 +36,7 @@ class Customer(models.Model):
     email = models.EmailField(max_length=254, unique=True)
     dob = models.DateField(auto_now_add=False,blank=False)
 
+
 class Pledging(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     cus_id = models.ForeignKey(Customer, on_delete=models.CASCADE)

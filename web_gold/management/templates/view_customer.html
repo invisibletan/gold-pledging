@@ -46,7 +46,7 @@
                         <p>วันเกิด : </p>
                     </div>
                     <div class='col-6' style="text-align: left;">
-                        <p>{{ cus.dob}}</p>
+                        <p>{{ cus.dob|date:"d / m / Y"}}</p>
                     </div>
                 </div>
                 <hr>
@@ -72,8 +72,8 @@
                 <th scope="row">{{i.id}}</th>
                 <td>{{i.cus_id.first_name}}</td>
                 <td>{{i.cus_id.last_name}}</td>
-                <td >{{i.pledge_date}}</td>
-                <td >{{i.expire_date}}</td>
+                <td >{{i.pledge_date|date:"d / m / Y"}}</td>
+                <td >{{i.expire_date|date:"d / m / Y"}}</td>
                 
                 <td><a href="{% url 'view_pledging' pled_id=i.id%}" class="btn btn-primary mr-2" ><i class="far fa-eye"></i></a></td>
             </tr>
