@@ -51,14 +51,14 @@ def add_customer(request):
         form = CustomerForm(request.POST)
         if form.is_valid():
             user = form.save()
-            return redirect('customers')
+            return redirect('view_customer', cus_id=user.id)
     else:
         form = CustomerForm(initial={
             'user_id' : request.user
         })
     return render(request, template_name='add_customer.html',context={'form': form, 'status':1})
 
-def add_pledging(request):
+def add_pledging(request, customer_id):
     form2 = formset_factory(GoldForm)
     if request.method == 'POST':
         form = PledgingForm(request.POST)
@@ -74,11 +74,19 @@ def add_pledging(request):
                     weight=form.cleaned_data['weight'],
                     goldtype=form.cleaned_data['goldtype'])
             
-            return redirect('pledging')
+            return redirect('view_customer', cus_id=pled.cus_id.id)
     else:
-        form = PledgingForm(initial={
+        if customer_id:
+            form = PledgingForm(initial={
+            'user_id' : request.user,
+            'cus_id' : customer_id
+            })
+        else:
+            form = PledgingForm(initial={
             'user_id' : request.user
-        })
+            })
+
+        
         
     return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2, 'status':1})
 

@@ -81,6 +81,7 @@
         </tbody>
     </table>
         </div>
+        <a href="{% url 'add_pledging' customer_id=cus.id %}" class="btn btn-success" ><i class="fas fa-folder-plus"></i></a>
         <a href="{% url 'edit_customer' cus_id=cus.id %}" class="btn btn-warning" ><i class="fas fa-edit"></i></a>
         <a href="{% url 'delete_customer' cus_id=cus.id%}"class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
     </div>
