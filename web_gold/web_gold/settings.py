@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     'log',
     'management',
     'payment',
-    'background_task',
     
 ]
 
