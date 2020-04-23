@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import *
+from rest_framework.urlpatterns import format_suffix_patterns
 
 urlpatterns = [
     path('' ,my_login, name='login'),
@@ -15,5 +16,6 @@ urlpatterns = [
     path('edit_pledging/<int:pled_id>', edit_pledging, name='edit_pledging'),
     path('delete_gold/<int:gold_id>/<int:pled_id>',delete_gold, name='delete_gold'),
     path('edit_admin/<int:admin_id>', edit_admin, name='edit_admin'),
+    path('pledging_api', pledging_api, name='pledging_api'),
     
 ]

@@ -7,6 +7,7 @@ from django.core.validators import MinLengthValidator
 from datetime import timedelta, date
 
 # Create your models here.
+
 class PledgingType(enum.Enum):
     expired = 0
     in_contract = 1

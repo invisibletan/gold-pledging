@@ -3,17 +3,25 @@ import email
 from builtins import object
 from datetime import date, timedelta
 
+from background_task import background
 from django.contrib.admin.helpers import AdminForm
+from django.contrib.auth.models import User
 from django.forms import formset_factory
 from django.shortcuts import redirect, render
-
+from django.template.defaultfilters import safe
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.http import JsonResponse
 from .form import AdminForm, CustomerForm, GoldForm, PledgingForm
 from .models import Customer, Gold, Pledging
-
-from django.contrib.auth.models import User
+from .serializers import ToDoItemSerializer
+import json
 # Create your views here.
 
-from background_task import background
 @background(schedule=100)
 def update_queue_status():
     k =Pledging.objects.filter(expire_date=date.today()).update(type_pledging=0)
@@ -24,6 +32,16 @@ update_queue_status(repeat=100)
 
 def my_login(request):
     return render(request, template_name='login.html')
+
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def pledging_api(request):
+    if request.method == 'GET':
+        items = Pledging.objects.all()
+        serializer = ToDoItemSerializer(items, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+   
 
 def pledging(request):
     pledging = Pledging.objects.all()

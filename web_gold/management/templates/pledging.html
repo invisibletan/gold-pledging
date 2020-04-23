@@ -2,14 +2,14 @@
 {% block content %}
 {% load static %}
 <div class="container">
-    <form class="form-inline" method='GET' action=''>
+    <div class="form-inline">
         {% csrf_token %}
         <div class="col-sm-2"></div>
-        <input type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh"
-            value=''>
-        <button type="submit" class="btn btn-outline-primary ml-2 col-md-2" value="Seacrh">ค้นหา</button>
-    </form>
-    <table class="table mt-5"style="text-align:center;" >
+        <input type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh" value=''>
+        <button type="submit" class="btn btn-outline-primary ml-2 col-md-2" value="Seacrh"
+            onclick="find()">ค้นหา</button>
+    </div>
+    <table class="table mt-5"style="text-align:center;" id='myTable' >
         <thead class="thead-dark">
             <tr>
               <th scope="col">ID</th>
@@ -21,19 +21,101 @@
               <th scope="col">Handle</th>
             </tr>
           </thead>
-          <tbody>
-    {% for i in pledging%}
-    {% ifequal i.type_pledging 0 %} <tr style="color:red"> {%else%} {% ifequal i.type_pledging 2 %} <tr style="color:blue">{% endifequal%}{% endifequal%}
-    <th scope="row">{{i.id}}</th> 
-        <td>{{i.cus_id.first_name}}</td>
-        <td>{{i.cus_id.last_name}}</td>
-        <td >{{i.pledge_date|date:"d / m / Y"}}</td>
-        <td >{{i.expire_date|date:"d / m / Y"}}</td>
-        <td >{{i.type_pledging}}</td>
-        <td><a href="{% url 'view_pledging' pled_id=i.id%}" class="btn btn-primary mr-2" ><i class="far fa-eye"></i></a><a href="{% url 'delete_pledging' pled_id=i.id%}" class="btn btn-danger"><i class="far fa-trash-alt"></i></a></td>
-    </tr>
-    {% endfor %}
-</tbody>
-    </table>
+        </table> 
+
+     <script>
+
+
+    axios.get('/pledging_api', { username: 1 })
+
+        .then(function (response) {
+            // handle success
+            items = response.data
+
+            items.forEach((item) => {
+                let id = item.id
+                let first_name = item.first_name
+                let last_name = item.last_name
+                let pledge_date = item.pledge_date
+                let expire_date = item.expire_date
+                let type_pledging = item.type_pledging
+
+                let li = createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging)
+             
+            })
+
+            console.log(response.data);
+        })
+        .catch(function (error) {
+            console.log(error);
+        })
+    function createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging){
+        var contact = ['หมดสัญญา', 'อยู่ในสัญญา', 'ไถ่คืนเรียบร้อย']
+        var table = document.getElementById("myTable");
+        var row = table.insertRow(-1);
+        var cell1 = row.insertCell(-1);
+        var cell2 = row.insertCell(-1);
+        var cell3 = row.insertCell(-1);
+        var cell4 = row.insertCell(-1);
+        var cell5 = row.insertCell(-1);
+        var cell6 = row.insertCell(-1);
+        var cell7 = row.insertCell(-1);
+        let a1 = document.createElement('a')
+        a1.className = "btn btn-primary mr-2"
+        a1.href = "{% url 'view_pledging' pled_id=999999 %}".replace(/999999/, id.toString());
+        let i1 = document.createElement('i')
+        i1.className = "far fa-eye"
+        let a2 = document.createElement('a')
+        a2.className = "btn btn-danger"
+        a2.href = "{% url 'delete_pledging' pled_id=999999 %}".replace(/999999/, id.toString());
+        let i2 = document.createElement('i')
+        i2.className = "far fa-trash-alt"
+        a1.append(i1)
+        a2.append(i2)
+        cell1.append(id)
+        cell2.append(first_name)
+        cell3.append(last_name)
+        cell4.append(pledge_date)
+        cell5.append(expire_date)
+        cell6.append(contact[type_pledging])
+        cell7.append(a1)
+        cell7.append(a2)
+        
+
+    }
+
+
+
+    </script>
+    <!-- <table class="table mt-5" style="text-align:center;">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Pledge Date</th>
+                <th scope="col">Expire Date</th>
+                <th scope="col">Pledging Type</th>
+                <th scope="col">Handle</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in pledging%}
+            {% ifequal i.type_pledging 0 %} <tr style="color:red"> {%else%} {% ifequal i.type_pledging 2 %}
+            <tr style="color:blue">{% endifequal%}{% endifequal%}
+                <th scope="row">{{i.id}}</th>
+                <td>{{i.cus_id.first_name}}</td>
+                <td>{{i.cus_id.last_name}}</td>
+                <td>{{i.pledge_date|date:"d / m / Y"}}</td>
+                <td>{{i.expire_date|date:"d / m / Y"}}</td>
+                <td>{{i.type_pledging}}</td>
+                <td><a href="{% url 'view_pledging' pled_id=i.id%}" class="btn btn-primary mr-2"><i
+                            class="far fa-eye"></i></a><a href="{% url 'delete_pledging' pled_id=i.id%}"
+                        class="btn btn-danger"><i class="far fa-trash-alt"></i></a></td>
+            </tr>
+                {% endfor %}
+        </tbody>
+    </table> -->
 </div>
+
 {% endblock %}
