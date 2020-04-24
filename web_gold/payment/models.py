@@ -27,14 +27,11 @@ class Payment(models.Model):
     pay_date = models.DateField(auto_now_add=True,blank=False,null=False)
 
 class Online(Payment):
-    
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     cus_id = models.ForeignKey(Customer, on_delete=models.PROTECT)
     status = enum.EnumField(Status, default=Status.wait)
 
-
 class Offline(Payment):
-  
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     cus_id = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
@@ -45,5 +42,4 @@ class Transaction(models.Model):
     trantype = enum.EnumField(Trantype, default=Trantype.redeem)
 
 class Re_contract(Transaction):
-
     start_date = models.DateField(auto_now_add=True,blank=False,null=False)

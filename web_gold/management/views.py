@@ -29,7 +29,6 @@ from django.db.models import Q
 #     k =Pledging.objects.filter(expire_date=date.today()).update(type_pledging=0)
 #     print('Run!!!')
 
-            
 # update_queue_status(repeat=100)
 
 def index(request):

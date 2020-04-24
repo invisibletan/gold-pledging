@@ -30,7 +30,7 @@ class GoldType(enum.Enum):
         bracelet: ugettext_lazy("กำไล"),
     }
 class Customer(models.Model):
-    user_acc = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user')
+    user_acc = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='user')
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     first_name = models.CharField(null=False, max_length=255)
     last_name = models.CharField(null=False, max_length=255)

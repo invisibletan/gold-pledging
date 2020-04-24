@@ -114,22 +114,18 @@
                         <a class="nav-link" href="{% url 'payment' %}">รายการชำระ</a>
                     </li>
                     {% endcomment %}
-                    {% for group in user.groups.all %}
-                        {%  if group.name == 'customer' %}
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                {% comment %} href="{% url 'inform_payment' %}" {% endcomment %}
-                                >แจ้งชำระ</a>
-                            </li>
-                        {%  elif group.name == 'admin' %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'customers' %}">ข้อมูลลูกค้า</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'edit_admin' admin_id=user.id%}">แก้ไขข้อมูล</a>
-                            </li>
-                        {% endif %}
-                    {% endfor %}
+                    {%  if user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'customers' %}">ข้อมูลลูกค้า</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'edit_admin' admin_id=user.id%}">แก้ไขข้อมูล</a>
+                        </li>
+                    {%  else %}
+                        <li class="nav-item">
+                            <a class="nav-link" {% comment %} href="{% url 'inform_payment' %}" {% endcomment %}>แจ้งชำระ</a>
+                        </li>
+                    {% endif %}
                     {% comment %}
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'log' %}">ดูประวัติ</a>
