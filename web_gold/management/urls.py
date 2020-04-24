@@ -17,5 +17,6 @@ urlpatterns = [
     path('delete_gold/<int:gold_id>/<int:pled_id>',delete_gold, name='delete_gold'),
     path('edit_admin/<int:admin_id>', edit_admin, name='edit_admin'),
     path('pledging_api', pledging_api, name='pledging_api'),
+    path('customers_api', customers_api, name='customers_api'),
     
 ]

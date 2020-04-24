@@ -18,7 +18,7 @@ from rest_framework.views import APIView
 from django.http import JsonResponse
 from .form import AdminForm, CustomerForm, GoldForm, PledgingForm
 from .models import Customer, Gold, Pledging
-from .serializers import  PledgingSerializer
+from .serializers import  PledgingSerializer, CustomerSerializer
 from django.db.models import Q
 # Create your views here.
 
@@ -42,15 +42,22 @@ def pledging_api(request):
         print(find)
         serializer =  PledgingSerializer(pledging, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-   
+
+@csrf_exempt
+@api_view(['GET', 'POST'])  
+def customers_api(request):
+    if request.method == 'GET':
+        find = request.query_params['find']
+        cus = Customer.objects.filter(Q(first_name__icontains=find)|(Q(last_name__icontains=find))|(Q(id__icontains=find)))
+        print(find)
+        serializer =  CustomerSerializer(cus, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 def pledging(request):
-    pledging = Pledging.objects.all()
     return render(request, 'pledging.html')
 
 def customers(request):
-    customer = Customer.objects.all()
-    return render(request, 'customers.html', context={'customer': customer})
+    return render(request, 'customers.html')
 
 def view_customer(request, cus_id):
     view_cus = Customer.objects.get(pk=cus_id)

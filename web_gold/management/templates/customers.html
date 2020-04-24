@@ -2,32 +2,102 @@
 {% block content %}
 {% load static %}
 <div class="container">
-    <form class="form-inline" method='GET' action=''>
-        {% csrf_token %}
-        <div class="col-sm-2"></div>
-        <input type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh"
-            value=''>
-        <button type="submit" class="btn btn-outline-primary ml-2 col-md-2" value="Seacrh">ค้นหา</button>
-    </form>
+
+    <center>
+        <div class="col mt-2">
+            <input id="find" type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh" value=''
+                onInput="find()">
+
+        </div>
+    </center>
     <table class="table mt-5" style="text-align:center;">
         <thead class="thead-dark">
             <tr>
-              <th scope="col">ID</th>
-              <th scope="col">First Name</th>
-              <th scope="col">Last Name</th>
-              <th scope="col">Handle</th>
+                <th scope="col">ID</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Handle</th>
             </tr>
-          </thead>
-          <tbody>
-    {% for i in customer%}
-    <tr>
-        <th scope="row">{{i.id}}</th>
-        <td>{{i.first_name}}</td>
-        <td>{{i.last_name}}</td>
-        <td><a href="{% url 'view_customer' cus_id=i.id%}" class="btn btn-primary mr-2" ><i class="far fa-eye"></i></a><a href="{% url 'delete_customer' cus_id=i.id%}"class="btn btn-danger"><i class="far fa-trash-alt"></i></a></td>
-    </tr>
-    {% endfor %}
-</tbody>
+        </thead>
+        <tbody>
+            <!-- {% for i in customer%}
+            <tr>
+                <th scope="row">{{i.id}}</th>
+                <td>{{i.first_name}}</td>
+                <td>{{i.last_name}}</td>
+                <td><a href="{% url 'view_customer' cus_id=i.id%}" class="btn btn-primary mr-2"><i
+                            class="far fa-eye"></i></a><a href="{% url 'delete_customer' cus_id=i.id%}"
+                        class="btn btn-danger"><i class="far fa-trash-alt"></i></a></td>
+            </tr>
+            {% endfor %} -->
+        </tbody>
     </table>
+    <script>
+        function createThis(id, first_name, last_name){
+            console.log( document.getElementsByTagName('tbody')[0])
+            var table =  document.getElementsByTagName('tbody')[0];
+            var row = table.insertRow(-1);
+            var cell1 = row.insertCell(-1);
+            var cell2 = row.insertCell(-1);
+            var cell3 = row.insertCell(-1);
+            var cell4 = row.insertCell(-1);
+            let a1 = document.createElement('a')
+            a1.className = "btn btn-primary mr-2"
+            a1.href = "{% url 'view_customer' cus_id=999999 %}".replace(/999999/, id.toString());
+            let i1 = document.createElement('i')
+            i1.className = "far fa-eye"
+            let a2 = document.createElement('a')
+            a2.className = "btn btn-danger"
+            a2.href = "{% url 'delete_customer' cus_id=999999 %}".replace(/999999/, id.toString());
+            let i2 = document.createElement('i')
+            i2.className = "far fa-trash-alt"
+            a1.append(i1)
+            a2.append(i2)
+            cell1.append(id)
+            cell2.append(first_name)
+            cell3.append(last_name)
+            cell4.append(a1)
+            cell4.append(a2)
+            
+    
+        }
+        find()
+        function find(){
+            console.log('run')
+            var e =document.getElementsByTagName('tbody')[0];
+            var child =  e.lastElementChild;
+            while (child) { 
+    
+                e.removeChild(child);
+                child = e.lastElementChild; 
+    
+            }
+            var find = document.getElementById("find").value;
+            console.log(find)
+            axios.get('/customers_api', {params:{find:find}})
+    
+            .then(function (response) {
+                // handle success
+                items = response.data
+    
+                items.forEach((item) => {
+                    let id = item.id
+                    let first_name = item.first_name
+                    let last_name = item.last_name
+
+                    let li = createThis(id, first_name, last_name)
+                 }
+                )
+    
+                console.log(response.data);
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+        }
+    
+    
+    
+        </script>
 </div>
 {% endblock %}
