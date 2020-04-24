@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'management',
     'payment',
-    'background_task',
+    # 'background_task',
     'rest_framework'
 ]
 REST_FRAMEWORK = {

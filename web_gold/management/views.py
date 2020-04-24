@@ -3,7 +3,7 @@ import email
 from builtins import object
 from datetime import date, timedelta
 
-from background_task import background
+# from background_task import background
 from django.contrib.admin.helpers import AdminForm
 from django.contrib.auth.models import User
 from django.forms import formset_factory
@@ -22,10 +22,10 @@ from .serializers import  PledgingSerializer, CustomerSerializer
 from django.db.models import Q
 # Create your views here.
 
-@background(schedule=100)
-def update_queue_status():
-    k =Pledging.objects.filter(expire_date=date.today()).update(type_pledging=0)
-    print('Run!!!')
+# @background(schedule=100)
+# def update_queue_status():
+#     k =Pledging.objects.filter(expire_date=date.today()).update(type_pledging=0)
+#     print('Run!!!')
 
             
 update_queue_status(repeat=100)
@@ -62,6 +62,8 @@ def pledging(request):
 def customers(request):
     return render(request, 'customers.html')
 
+def log(request):
+    return 
 def view_customer(request, cus_id):
     view_cus = Customer.objects.get(pk=cus_id)
     view_pledging = Pledging.objects.filter(cus_id=cus_id)
@@ -109,11 +111,10 @@ def add_pledging(request, customer_id):
                     pledging_id=Pledging.objects.get(pk=pled.id),
                     weight=form.cleaned_data['weight'],
                     goldtype=form.cleaned_data['goldtype'])
-                cus = Customer.objects.get(pk=request.user)
-                # print(pled.first_name+" "+pled.last_name+" จำนำทอง " +"ทำรายการโดย "+cus.first_name+" "+cus.last_nam)
-                # log = Log.objects.create(
-                #     user_id=cus.id,
-                #     detail=pled.first_name+" "+pled.last_name+" จำนำทอง " +"ทำรายการโดย "+cus.first_name+" "+cus.last_name)
+                user = User.objects.get(pk=request.user.id)
+                log = Log.objects.create(
+                    user_id=user,
+                    detail=pled.cus_id.first_name+" "+pled.cus_id.last_name+" จำนำทอง " +"ทำรายการโดย "+user.first_name+" "+user.last_name)
             return redirect('view_customer', cus_id=pled.cus_id.id)
     else:
         if customer_id:
