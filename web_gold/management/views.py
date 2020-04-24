@@ -80,7 +80,6 @@ def customers_api(request):
     if request.method == 'GET':
         find = request.query_params['find']
         cus = Customer.objects.filter(Q(first_name__icontains=find)|(Q(last_name__icontains=find))|(Q(id__icontains=find)))
-        print(find)
         serializer =  CustomerSerializer(cus, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -94,11 +93,13 @@ def log(request):
     return 
 def view_customer(request, cus_id):
     view_cus = Customer.objects.get(pk=cus_id)
+    view_cus.id = "%05d" %view_cus.id
     view_pledging = Pledging.objects.filter(cus_id=cus_id)
     return render(request, 'view_customer.html', context={'cus': view_cus, 'p': view_pledging})
 
 def view_pledging(request, pled_id):
     view_pled = Pledging.objects.get(pk=pled_id)
+    
     view_gold = Gold.objects.filter(pledging_id=pled_id)
     return render(request, 'view_pledging.html', context={'p': view_pled, 'gold': view_gold})
 

@@ -37,6 +37,7 @@ class Customer(models.Model):
     citizen_id = models.CharField(max_length=13,validators=[MinLengthValidator(13)], null=False, unique=True)
     email = models.EmailField(max_length=254, unique=True)
     dob = models.DateField(auto_now_add=False,blank=False)
+ 
 
 
 class Pledging(models.Model):
@@ -50,6 +51,7 @@ class Pledging(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.expire_date = date.today() + timedelta(days=self.contract_term)
+            
         super(Pledging, self).save(*args, **kwargs)
 
 
