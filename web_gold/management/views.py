@@ -28,7 +28,7 @@ from django.db.models import Q
 #     print('Run!!!')
 
             
-update_queue_status(repeat=100)
+# update_queue_status(repeat=100)
 
 def my_login(request):
     return render(request, template_name='login.html')
