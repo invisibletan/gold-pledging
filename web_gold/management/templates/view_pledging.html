@@ -9,32 +9,17 @@
     <div class="card mt-5 border-warning " style="text-align: center;">
 
         <div class="card-body ">
-            <div class='mb-3'>
+            <div class='mb-3' style='text-align:center;position:relative'>
+                <div style='position:absolute;top:0;left:0;'>รหัสจำนำทอง : {{ p.id}}</div>
                 <h4>รายละเอียดรายการจำนำ</h4>
             </div>
             <div class="row">
                 <div class='col-6'style="text-align: right;">
-                    <p>รหัสจำนำทอง : </p>
+                    <p>ชื่อ - นามสกุล: </p>
                 </div>
                
                 <div class='col-6' style="text-align: left;">
-                    <p>{{ p.id}}</p>
-                </div>
-
-                <div class='col-6'style="text-align: right;">
-                    <p>ชื่อ : </p>
-                </div>
-               
-                <div class='col-6' style="text-align: left;">
-                    <p>{{ p.cus_id.first_name}}</p>
-                </div>
-
-                <div class='col-6'style="text-align: right;">
-                    <p>นามสกุล : </p>
-                </div>
-                
-                <div class='col-6' style="text-align: left;">
-                    <p>{{ p.cus_id.last_name}}</p>
+                    <p>{{ p.cus_id.first_name}} {{ p.cus_id.last_name}}</p>
                 </div>
 
                 <div class='col-6'style="text-align: right;">
@@ -57,19 +42,13 @@
                 </div>
     
                 <div class='col-6' style="text-align: left;">
-                    <p>{{ p.pledge_balanca}}</p>
+                    <p>{{ p.pledge_balanca}} บาท</p>
                 </div>
                 <div class='col-6'style="text-align: right;">
-                    <p>วันเริ่มทำสัญญา : </p>
+                    <p>ระยะเวลาสัญญา : </p>
                 </div>
                 <div class='col-6' style="text-align: left;">
-                    <p>{{ p.pledge_date|date:"d / m / Y"}}</p>
-                </div>
-                <div class='col-6'style="text-align: right;">
-                    <p>วันหมดสัญญา : </p>
-                </div>
-                <div class='col-6' style="text-align: left;">
-                    <p>{{ p.expire_date|date:"d / m / Y"}}</p>
+                    <p>{{ p.pledge_date|date:"d / m / Y"}} - {{ p.expire_date|date:"d / m / Y"}}</p>
                 </div>
                 <div class='col-6'style="text-align: right;">
                     <p>สถานะของสัญญา : </p>
@@ -105,10 +84,11 @@
             {% endfor %}
 
         </div>
+            <div style='display:flex'>
+            <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'edit_pledging' pled_id=p.id %}" class="btn btn-warning" ><i class="fas fa-edit"></i> แก้ไขรายการจำนำ</a>
+            <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'delete_pledging' pled_id=p.id%}"class="btn btn-danger"><i class="far fa-trash-alt"></i> ลบรายการจำนำ</a>
+        </div>
 
-
-        <a href="{%url 'edit_pledging' pled_id=p.id%}" class="btn btn-warning"><i class="fas fa-edit"></i></a>
-        <a href="{% url 'delete_pledging' pled_id=p.id%}" class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
     </div>
 </div>
 </center>

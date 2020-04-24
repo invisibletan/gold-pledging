@@ -8,27 +8,16 @@
     <div class="card mt-5 border-warning ">
 
         <div class="card-body ">
-            <center><div class='mb-3'>
+            <div class='mb-3' style='text-align:center;position:relative'>
+                <div style='position:absolute;top:0;left:0;'>รหัสลูกค้า : {{ cus.id}}</div>
                 <h4>รายละเอียดลูกค้า</h4>
-            </div></center>
+            </div>
                 <div class="row">
                     <div class='col-6' style="text-align: right;">
-                        <p >รหัสลูกค้า : </p>
+                        <p>ชื่อ - นามสกุล: </p>
                     </div>
                     <div class='col-6' style="text-align: left;">
-                        <p>{{ cus.id}}</p>
-                    </div>
-                    <div class='col-6' style="text-align: right;">
-                        <p>ชื่อ : </p>
-                    </div>
-                    <div class='col-6' style="text-align: left;">
-                        <p>{{ cus.first_name}}</p>
-                    </div>
-                    <div class='col-6' style="text-align: right;">
-                        <p>นามสกุล : </p>
-                    </div>
-                    <div class='col-6' style="text-align: left;">
-                        <p>{{ cus.last_name}}</p>
+                        <p>{{ cus.first_name}} {{ cus.last_name}}</p>
                     </div>
                     <div class='col-6' style="text-align: right;">
                         <p>รหัสประชาชน : </p>
@@ -81,9 +70,11 @@
         </tbody>
     </table>
         </div>
-        <a href="{% url 'add_pledging' customer_id=cus.id %}" class="btn btn-success" ><i class="fas fa-folder-plus"></i></a>
-        <a href="{% url 'edit_customer' cus_id=cus.id %}" class="btn btn-warning" ><i class="fas fa-edit"></i></a>
-        <a href="{% url 'delete_customer' cus_id=cus.id%}"class="btn btn-danger"><i class="far fa-trash-alt"></i></a>
+        <div style='display:flex'>
+            <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'add_pledging' customer_id=cus.id %}" class="btn btn-success" ><i class="fas fa-folder-plus"></i> เพิ่มรายการจำนำ </a>
+            <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'edit_customer' cus_id=cus.id %}" class="btn btn-warning" ><i class="fas fa-edit"></i> แก้ไขข้อมูลลูกค้า</a>
+            <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'delete_customer' cus_id=cus.id%}"class="btn btn-danger"><i class="far fa-trash-alt"></i> ลบข้อมูลลูกค้า</a>
+        </div>
     </div>
 </div>
 {% endblock %}
