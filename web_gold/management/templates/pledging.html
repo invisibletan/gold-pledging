@@ -2,103 +2,130 @@
 {% block content %}
 {% load static %}
 <div class="container">
-<center>
-    <div class="col mt-2">
-    <input id="find" type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh" value=''  onInput="find()">
-    
-    </div></center>
-    <table class="table mt-5"style="text-align:center;" id='myTable' >
+    <center>
+        <div class="col mt-2">
+            <input id="find" type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh" value=''
+                onInput="showTable()">
+            <div class="form-check form-check-inline mt-4">
+                <input id="inlineCheckbox1" class="form-check-input" type="checkbox" data-toggle="toggle"
+                    data-style="mr-1 ml-5" data-onstyle="danger" data-offstyle="secondary"  onchange="showTable()" checked>
+                <label for="inlineCheckbox1" class="form-check-label">หมดสัญญา</label>
+                <input id="inlineCheckbox2" class="form-check-input" type="checkbox" data-toggle="toggle"
+                    data-style="mr-1 ml-4" data-onstyle="primary" data-offstyle="secondary" onchange="showTable()" checked>
+                <label for="inlineCheckbox2" class="form-check-label">อยู่ในสัญญา</label>
+                <input id="inlineCheckbox3" class="form-check-input" type="checkbox" data-toggle="toggle"
+                    data-style="mr-1 ml-4" data-onstyle="success" data-offstyle="secondary" onchange="showTable()" checked>
+                <label for="inlineCheckbox3" class="form-check-label">ไถ่คืนเรียบร้อย</label>
+            </div>
+
+    </center>
+    <table class="table mt-5" style="text-align:center;" id='myTable'>
         <thead class="thead-dark" id="head_table">
             <tr>
-              <th scope="col">ID</th>
-              <th scope="col">First Name</th>
-              <th scope="col">Last Name</th>
-              <th scope="col">Pledge Date</th>
-              <th scope="col">Expire Date</th>
-              <th scope="col">Pledging Type</th>
-              <th scope="col">Handle</th>
+                <th scope="col">ID</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Pledge Date</th>
+                <th scope="col">Expire Date</th>
+                <th scope="col">Pledging Type</th>
+                <th scope="col">Handle</th>
             </tr>
         </thead>
         <tbody>
 
         </tbody>
-    </table> 
+    </table>
 
-     <script>
-    function createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging){
-        var contact = ['หมดสัญญา', 'อยู่ในสัญญา', 'ไถ่คืนเรียบร้อย']
-        console.log( document.getElementsByTagName('tbody')[0])
-        var table =  document.getElementsByTagName('tbody')[0];
-        var row = table.insertRow(-1);
-        var cell1 = row.insertCell(-1);
-        var cell2 = row.insertCell(-1);
-        var cell3 = row.insertCell(-1);
-        var cell4 = row.insertCell(-1);
-        var cell5 = row.insertCell(-1);
-        var cell6 = row.insertCell(-1);
-        var cell7 = row.insertCell(-1);
-        let a1 = document.createElement('a')
-        a1.className = "btn btn-primary mr-2"
-        a1.href = "{% url 'view_pledging' pled_id=999999 %}".replace(/999999/, id.toString());
-        let i1 = document.createElement('i')
-        i1.className = "far fa-eye"
-        let a2 = document.createElement('a')
-        a2.className = "btn btn-danger"
-        a2.href = "{% url 'delete_pledging' pled_id=999999 %}".replace(/999999/, id.toString());
-        let i2 = document.createElement('i')
-        i2.className = "far fa-trash-alt"
-        a1.append(i1)
-        a2.append(i2)
-        cell1.append(id)
-        cell2.append(first_name)
-        cell3.append(last_name)
-        let date = pledge_date.split("-");
-        let date2 = expire_date.split("-");
-        cell4.append(date[2]+" / "+date[1]+" / "+date[0])
-        cell5.append(date2[2]+" / "+date2[1]+" / "+date2[0])
-        cell6.append(contact[type_pledging])
-        cell7.append(a1)
-        cell7.append(a2)
-        
+    <script>
+        $(function () {
+            $('inlineCheckbox1').bootstrapToggle('on');
+        })
+        function createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging) {
+            var contact = ['หมดสัญญา', 'อยู่ในสัญญา', 'ไถ่คืนเรียบร้อย']
+            console.log(document.getElementsByTagName('tbody')[0])
+            var table = document.getElementsByTagName('tbody')[0];
+            var row = table.insertRow(-1);
+            var cell1 = row.insertCell(-1);
+            var cell2 = row.insertCell(-1);
+            var cell3 = row.insertCell(-1);
+            var cell4 = row.insertCell(-1);
+            var cell5 = row.insertCell(-1);
+            var cell6 = row.insertCell(-1);
+            var cell7 = row.insertCell(-1);
+            let a1 = document.createElement('a')
+            a1.className = "btn btn-primary mr-2"
+            a1.href = "{% url 'view_pledging' pled_id=999999 %}".replace(/999999/, id.toString());
+            let i1 = document.createElement('i')
+            i1.className = "far fa-eye"
+            let a2 = document.createElement('a')
+            a2.className = "btn btn-danger"
+            a2.href = "{% url 'delete_pledging' pled_id=999999 %}".replace(/999999/, id.toString());
+            let i2 = document.createElement('i')
+            i2.className = "far fa-trash-alt"
+            a1.append(i1)
+            a2.append(i2)
+            cell1.append(id)
+            cell2.append(first_name)
+            cell3.append(last_name)
+            let date = pledge_date.split("-");
+            let date2 = expire_date.split("-");
+            cell4.append(date[2] + " / " + date[1] + " / " + date[0])
+            cell5.append(date2[2] + " / " + date2[1] + " / " + date2[0])
+            cell6.append(contact[type_pledging])
+            cell7.append(a1)
+            cell7.append(a2)
 
-    }
-    find()
-    function find(){
-        console.log('run')
-        var e =document.getElementsByTagName('tbody')[0];
-        var child =  e.lastElementChild;
-        while (child) { 
-
-            e.removeChild(child);
-            child = e.lastElementChild; 
 
         }
-        var find = document.getElementById("find").value;
-        console.log(find)
-        axios.get('/pledging_api', {params:{find:find}})
+        showTable()
+        function showTable() {
+            var e = document.getElementsByTagName('tbody')[0];
+            var child = e.lastElementChild;
+            while (child) {
 
-        .then(function (response) {
-            // handle success
-            items = response.data
+                e.removeChild(child);
+                child = e.lastElementChild;
 
-            items.forEach((item) => {
-                let id = item.id
-                let first_name = item.first_name
-                let last_name = item.last_name
-                let pledge_date = item.pledge_date
-                let expire_date = item.expire_date
-                let type_pledging = item.type_pledging
+            }
+            let out_enum = 3
+            let chk_out = out_enum
+            let chk_in = out_enum
+            let chk_re = out_enum
+            if ($('#inlineCheckbox1').prop('checked')){
+                chk_out = 0
+            }
+            if ($('#inlineCheckbox2').prop('checked')){
+                chk_in = 1
+            }
+            if ($('#inlineCheckbox3').prop('checked')){
+                chk_re = 2
+            }
+            var find = document.getElementById("find").value;
 
-                let li = createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging)
-             }
-            )
+            axios.get('/pledging_api', { params: { find: find , chk_out:chk_out, chk_in:chk_in, chk_re:chk_re} })
 
-            console.log(response.data);
-        })
-        .catch(function (error) {
-            console.log(error);
-        })
-    }
+                .then(function (response) {
+                    // handle success
+                    items = response.data
+
+                    items.forEach((item) => {
+                        let id = item.id
+                        let first_name = item.first_name
+                        let last_name = item.last_name
+                        let pledge_date = item.pledge_date
+                        let expire_date = item.expire_date
+                        let type_pledging = item.type_pledging
+
+                        let li = createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging)
+                    }
+                    )
+
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+        }
 
 
 

@@ -39,7 +39,10 @@ def pledging_api(request):
     if request.method == 'GET':
         find = request.query_params['find']
         pledging = Pledging.objects.filter(Q(cus_id__first_name__icontains=find)|(Q(cus_id__last_name__icontains=find))|(Q(id__icontains=find)))
-        print(find)
+        chk_out = int(request.query_params['chk_out'])
+        chk_in = int(request.query_params['chk_in'])
+        chk_re = int(request.query_params['chk_re'])
+        pledging = pledging.filter(type_pledging__in=[chk_out, chk_in, chk_re])
         serializer =  PledgingSerializer(pledging, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
