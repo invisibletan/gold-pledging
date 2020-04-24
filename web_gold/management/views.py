@@ -17,7 +17,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.http import JsonResponse
 from .form import AdminForm, CustomerForm, GoldForm, PledgingForm
-from .models import Customer, Gold, Pledging
+from .models import Customer, Gold, Pledging, Log
 from .serializers import  PledgingSerializer, CustomerSerializer
 from django.db.models import Q
 # Create your views here.
@@ -109,7 +109,11 @@ def add_pledging(request, customer_id):
                     pledging_id=Pledging.objects.get(pk=pled.id),
                     weight=form.cleaned_data['weight'],
                     goldtype=form.cleaned_data['goldtype'])
-            
+                cus = Customer.objects.get(pk=request.user)
+                # print(pled.first_name+" "+pled.last_name+" จำนำทอง " +"ทำรายการโดย "+cus.first_name+" "+cus.last_nam)
+                # log = Log.objects.create(
+                #     user_id=cus.id,
+                #     detail=pled.first_name+" "+pled.last_name+" จำนำทอง " +"ทำรายการโดย "+cus.first_name+" "+cus.last_name)
             return redirect('view_customer', cus_id=pled.cus_id.id)
     else:
         if customer_id:
