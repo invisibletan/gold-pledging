@@ -2,13 +2,11 @@
 {% block content %}
 {% load static %}
 <div class="container">
-    <div class="form-inline">
-
-        <div class="col-sm-2"></div>
-        <input id="find" type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh" value=''>
-        <button type="submit" class="btn btn-outline-primary ml-2 col-md-2" value="Seacrh"
-            onclick="find()" >ค้นหา</button>
-    </div>
+<center>
+    <div class="col mt-2">
+    <input id="find" type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh" value=''  onInput="find()">
+    
+    </div></center>
     <table class="table mt-5"style="text-align:center;" id='myTable' >
         <thead class="thead-dark" id="head_table">
             <tr>
@@ -66,6 +64,7 @@
     }
     find()
     function find(){
+        console.log('run')
         var e =document.getElementsByTagName('tbody')[0];
         var child =  e.lastElementChild;
         while (child) { 
@@ -75,7 +74,7 @@
 
         }
         var find = document.getElementById("find").value;
-        
+        console.log(find)
         axios.get('/pledging_api', {params:{find:find}})
 
         .then(function (response) {

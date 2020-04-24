@@ -19,7 +19,7 @@ from django.http import JsonResponse
 from .form import AdminForm, CustomerForm, GoldForm, PledgingForm
 from .models import Customer, Gold, Pledging
 from .serializers import  PledgingSerializer
-import json
+from django.db.models import Q
 # Create your views here.
 
 @background(schedule=100)
@@ -38,7 +38,7 @@ def my_login(request):
 def pledging_api(request):
     if request.method == 'GET':
         find = request.query_params['find']
-        pledging = Pledging.objects.filter(cus_id__first_name__icontains=find)
+        pledging = Pledging.objects.filter(Q(cus_id__first_name__icontains=find)|(Q(cus_id__last_name__icontains=find))|(Q(id__icontains=find)))
         print(find)
         serializer =  PledgingSerializer(pledging, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
