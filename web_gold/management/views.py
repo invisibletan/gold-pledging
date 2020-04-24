@@ -18,7 +18,7 @@ from rest_framework.views import APIView
 from django.http import JsonResponse
 from .form import AdminForm, CustomerForm, GoldForm, PledgingForm
 from .models import Customer, Gold, Pledging
-from .serializers import ToDoItemSerializer
+from .serializers import  PledgingSerializer
 import json
 # Create your views here.
 
@@ -37,15 +37,16 @@ def my_login(request):
 @api_view(['GET', 'POST'])
 def pledging_api(request):
     if request.method == 'GET':
-        items = Pledging.objects.all()
-        serializer = ToDoItemSerializer(items, many=True)
-
+        find = request.query_params['find']
+        pledging = Pledging.objects.filter(cus_id__first_name__icontains=find)
+        print(find)
+        serializer =  PledgingSerializer(pledging, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
    
 
 def pledging(request):
     pledging = Pledging.objects.all()
-    return render(request, 'pledging.html', context={'pledging': pledging})
+    return render(request, 'pledging.html')
 
 def customers(request):
     customer = Customer.objects.all()
