@@ -30,6 +30,7 @@ class GoldType(enum.Enum):
         bracelet: ugettext_lazy("กำไล"),
     }
 class Customer(models.Model):
+    user_acc = models.ForeignKey(User, on_delete=models.CASCADE, null=True, related_name='user')
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     first_name = models.CharField(null=False, max_length=255)
     last_name = models.CharField(null=False, max_length=255)
@@ -41,7 +42,7 @@ class Customer(models.Model):
 class Pledging(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     cus_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    pledge_balanca = models.IntegerField(null=False)
+    pledge_balance = models.IntegerField(null=False)
     contract_term = models.IntegerField(null=False)
     pledge_date = models.DateField(auto_now_add=True,blank=False,null=False)
     expire_date = models.DateField(auto_now_add=False,null=True)

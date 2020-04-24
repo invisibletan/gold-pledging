@@ -10,4 +10,4 @@ class PledgingSerializer(serializers.ModelSerializer):
     last_name = serializers.CharField(max_length=255, source='cus_id.last_name')
     class Meta:
         model = Pledging
-        fields = ('id', 'pledge_balanca', 'contract_term', 'pledge_date','expire_date', 'type_pledging', 'first_name', 'last_name')
+        fields = ('id', 'pledge_balance', 'contract_term', 'pledge_date','expire_date', 'type_pledging', 'first_name', 'last_name')

@@ -5,7 +5,9 @@ from datetime import date, timedelta
 
 # from background_task import background
 from django.contrib.admin.helpers import AdminForm
-from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User, Group
 from django.forms import formset_factory
 from django.shortcuts import redirect, render
 from django.template.defaultfilters import safe
@@ -30,15 +32,42 @@ from django.db.models import Q
             
 # update_queue_status(repeat=100)
 
+def index(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    print(request.user)
+    return render(request, template_name='index.html')
+
 def my_login(request):
-    return render(request, template_name='login.html')
+    context = {}
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(request, username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect('index')
+        else:
+            context['username'] = username
+            context['error'] = 'username or password is invalid'
+    return render(request, template_name='login.html', context=context)
+
+@login_required
+def my_logout(request):
+    logout(request)
+    return redirect('login')
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def pledging_api(request):
     if request.method == 'GET':
         find = request.query_params['find']
-        pledging = Pledging.objects.filter(Q(cus_id__first_name__icontains=find)|(Q(cus_id__last_name__icontains=find))|(Q(id__icontains=find)))
+        if 'customer' in [group.name for group in request.user.groups.all()]:
+            customer = Customer.objects.get(user_acc=request.user)
+            pledging = Pledging.objects.filter(cus_id=customer)
+        else:
+            pledging = Pledging.objects.all()
+        pledging = pledging.filter(Q(cus_id__first_name__icontains=find)|(Q(cus_id__last_name__icontains=find))|(Q(id__icontains=find)))
         chk_out = int(request.query_params['chk_out'])
         chk_in = int(request.query_params['chk_in'])
         chk_re = int(request.query_params['chk_re'])
@@ -88,8 +117,17 @@ def add_customer(request):
     if request.method == 'POST':
         form = CustomerForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            return redirect('view_customer', cus_id=user.id)
+            customer = form.save()
+            # create user
+            user = User.objects.create_user(username = '%05d'%(customer.id))
+            user.set_password(customer.citizen_id)
+            group = Group.objects.get(name='customer')
+            user.groups.add(group)
+            user.save()
+            # relation to user
+            customer.user_acc = user
+            customer.save()
+            return redirect('view_customer', cus_id=customer.id)
     else:
         form = CustomerForm(initial={
             'user_id' : request.user
@@ -126,9 +164,6 @@ def add_pledging(request, customer_id):
             form = PledgingForm(initial={
             'user_id' : request.user
             })
-
-        
-        
     return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2, 'status':1})
 
 def edit_customer(request, cus_id):
@@ -183,7 +218,7 @@ def edit_pledging(request, pled_id):
         form2 = form2(request.POST)
         if form.is_valid() and form2.is_valid():
             pled.cus_id=Customer.objects.get(pk=request.POST.get('cus_id'))
-            pled.pledge_balanca=request.POST.get('pledge_balanca')
+            pled.pledge_balance=request.POST.get('pledge_balance')
             pled.contract_term=request.POST.get('contract_term')
             if  date.today() !=date.today() + timedelta(days=int(pled.contract_term)):
                 pled.type_pledging=1
@@ -211,7 +246,7 @@ def edit_pledging(request, pled_id):
         form = PledgingForm(initial={
             'user_id' : request.user,
             'cus_id' : pled.cus_id,
-            'pledge_balanca' : pled.pledge_balanca,
+            'pledge_balance' : pled.pledge_balance,
             'contract_term' : pled.contract_term,
             'expire_date' : pled.expire_date,
         })

@@ -20,6 +20,9 @@ class CustomerForm(ModelForm):
             'citizen_id':Input(attrs={'class':'form-control'}),
             'dob':Input(attrs={'class':'form-control','type':'date'}),
         }
+        exclude = {
+            'user_acc',
+        }
         labels = {
             'first_name' : 'ชื่อ',
             'last_name' : 'นามสกุล',
@@ -27,17 +30,17 @@ class CustomerForm(ModelForm):
             'citizen_id' : 'รหัสประชาชน',
             'dob' : 'วันเกิด'}
     def clean(self):
-       email = self.cleaned_data.get('email')
-       citizen_id = self.cleaned_data.get('citizen_id')
-       cus_id = self.cleaned_data.get('cus_id')
-       print(cus_id)
-       if ((Customer.objects.filter(email=email).exclude(pk=cus_id)).exists()):
-             self.add_error('email',"Email exists")
-       if not citizen_id.isdigit():
-             self.add_error('citizen_id',"Citizen id Digit Only!!") 
-       if (Customer.objects.filter(citizen_id=citizen_id).exclude(pk=cus_id)).exists():
-             self.add_error('citizen_id',"Citizen id exists")
-       return self.cleaned_data
+        email = self.cleaned_data.get('email')
+        citizen_id = self.cleaned_data.get('citizen_id')
+        cus_id = self.cleaned_data.get('cus_id')
+        print(cus_id)
+        if ((Customer.objects.filter(email=email).exclude(pk=cus_id)).exists()):
+            self.add_error('email',"Email exists")
+        if not citizen_id.isdigit():
+            self.add_error('citizen_id',"Citizen id Digit Only!!") 
+        if (Customer.objects.filter(citizen_id=citizen_id).exclude(pk=cus_id)).exists():
+            self.add_error('citizen_id',"Citizen id exists")
+        return self.cleaned_data
 
 
 class PledgingForm(ModelForm):
@@ -48,13 +51,13 @@ class PledgingForm(ModelForm):
             'user_id': forms.HiddenInput(),
             'type_pledging': forms.HiddenInput(),
             'cus_id':Input(attrs={'class':'form-control'}),
-            'pledge_balanca':Input(attrs={'class':'form-control'}),
+            'pledge_balance':Input(attrs={'class':'form-control'}),
             'contract_term':Input(attrs={'class':'form-control'}),
             'dob':Input(attrs={'class':'form-control','type':'date'}),
         }
         labels = {
             'cus_id' : 'รหัสลูกค้า',
-            'pledge_balanca' : 'ยอดจำนำ',
+            'pledge_balance' : 'ยอดจำนำ',
             'contract_term' : 'เวลาสัญญา ( เป็นวัน )',
             'pledge_date' : 'วันเริ่มทำสัญญา',
             'expire_date' : 'วันหมดสัญญา'}
