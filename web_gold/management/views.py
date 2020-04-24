@@ -10,26 +10,46 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.forms import formset_factory
 from django.shortcuts import redirect, render
-from django.template.defaultfilters import safe
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view
-from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.http import JsonResponse
 from .form import AdminForm, CustomerForm, GoldForm, PledgingForm
 from .models import Customer, Gold, Pledging, Log
 from .serializers import  PledgingSerializer, CustomerSerializer
 from django.db.models import Q
+
+from django.conf import settings
+from django.core.mail import send_mail
 # Create your views here.
 
-# @background(schedule=100)
-# def update_queue_status():
-#     k =Pledging.objects.filter(expire_date=date.today()).update(type_pledging=0)
-#     print('Run!!!')
 
-# update_queue_status(repeat=100)
+# from background_task import background
+# t = 0
+# k = 1
+# @background(schedule=1)
+# def update_queue_status():
+#     global t
+#     global k
+#     print(t)
+#     out_date = Pledging.objects.filter(expire_date=date.today()).exclude(type_pledging=0)
+#     email =[i['cus_id__email'] for i in list(out_date.values('cus_id__email'))]
+#     email = list(set(email))
+#     from_email = settings.EMAIL_HOST_USER
+#     if k:
+#         send_mail(
+#         subject='รายการจำนำหมดสัญญา',
+#         message='ลูกค้าไม่สามารถไถ่รายการจำนำ ภายในระยะเวลาสัญญา',
+#         from_email=from_email,
+#         recipient_list=email,
+#         fail_silently=False)
+#         print(email)
+#         k = 0
+#     out_date = out_date.update(type_pledging=0)
+#     t += 1
+
+            
+# update_queue_status(repeat=1)
 
 def index(request):
     if not request.user.is_authenticated:
@@ -66,6 +86,7 @@ def pledging_api(request):
             pledging = Pledging.objects.filter(cus_id=customer)
         else:
             pledging = Pledging.objects.all()
+        
         pledging = pledging.filter(Q(cus_id__first_name__icontains=find)|(Q(cus_id__last_name__icontains=find))|(Q(id__icontains=find)))
         chk_out = int(request.query_params['chk_out'])
         chk_in = int(request.query_params['chk_in'])
