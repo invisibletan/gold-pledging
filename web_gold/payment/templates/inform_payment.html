@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<div class="container">
+    <center class="mb-5">
+            <h3>แจ้งรายการชำระการต่อสัญญา</h3>
+            <h5>{{ msg }}</h5>
+    </center>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ payment_form.as_p }}
+        <hr>
+        <div class="container">
+            <center>
+                <h5>รายการจำนำ</h5>
+            </center>
+            {{ trans_formset.management_form }}
+            <div id="form_set">
+                {% for form in trans_formset.forms %}
+                    {{ form.non_field_errors }}
+                    {{ form.errors }}
+                    <div class="row">
+                        {{ form }}
+                    </div>
+                {% endfor %}
+            </div>
+            <input type="button" class="btn btn-primary" value="Add More" id="add_more">
+            <div id="empty_form" style="display: none">
+                <div class="no_error row">
+                    {{ trans_formset.empty_form }}
+                </div>
+            </div>
+        </div>
+        <hr>
+        <center>
+            <button type="submit" class="btn btn-primary">ยืนยัน</button>
+        </center>
+    </form>
+    <script>
+        $("#add_more").click(function() {
+            var form_idx = $("#id_form-TOTAL_FORMS").val();
+            $("#form_set").append($("#empty_form").html().replace(/__prefix__/g, form_idx));
+            $("#id_form-TOTAL_FORMS").val(parseInt(form_idx) + 1);
+        });
+    </script>
+</div>
+{% endblock %}

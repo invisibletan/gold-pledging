@@ -175,7 +175,6 @@ def log(request):
 
 def view_customer(request, cus_id):
     view_cus = Customer.objects.get(pk=cus_id)
-    view_cus.id = "%05d" %view_cus.id
     view_pledging = Pledging.objects.filter(cus_id=cus_id)
     return render(request, 'view_customer.html', context={'cus': view_cus, 'p': view_pledging})
 
@@ -204,7 +203,7 @@ def add_customer(request):
         if form.is_valid():
             customer = form.save()
             # create user
-            user = User.objects.create_user(username = '%05d'%(customer.id))
+            user = User.objects.create_user(username = '%d'%(customer.id))
             user.set_password(customer.citizen_id)
             group = Group.objects.get(name='customer')
             user.groups.add(group)

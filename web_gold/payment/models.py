@@ -44,6 +44,7 @@ class Online(Payment):
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     cus_id = models.ForeignKey(Customer, on_delete=models.PROTECT)
     status = enum.EnumField(Status, default=Status.wait)
+    picture = models.ImageField(upload_to='payments/', default=None, null=True)
 
 class Offline(Payment):
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)

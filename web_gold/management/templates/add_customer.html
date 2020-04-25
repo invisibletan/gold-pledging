@@ -4,19 +4,16 @@
 <div class="container">
     <center class='mb-5'>
         {% if status %}
-        <h3 >เพิ่มข้อมูลลูกค้า</h3>
-    {% else %}
-    <h3 >แก้ไขข้อมูลลูกค้า</h3>
-    {% endif %}
-    <h5>{{msg}}</h5>
-</center>
+            <h3>เพิ่มข้อมูลลูกค้า</h3>
+        {% else %}
+            <h3>แก้ไขข้อมูลลูกค้า</h3>
+        {% endif %}
+        <h5>{{msg}}</h5>
+    </center>
     <form method="POST" action="">
         {% csrf_token %}
-    
         {{ form.as_p }}
-       
-        
-        <button type="submit" class="btn btn-primary ml-3 pull-right"> {% if status %}เพิ่มลูกค้า{% else %}แก้ไขข้อมูล {% endif %}</button>
+        <button type="submit" class="btn btn-primary ml-3 pull-right"> {% if status %} เพิ่มลูกค้า {% else %} แก้ไขข้อมูล {% endif %}</button>
     </form>
 </div>
 {% endblock %}

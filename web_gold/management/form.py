@@ -10,8 +10,9 @@ class CustomerForm(ModelForm):
     cus_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
     class Meta:
         model = Customer
-        
-        fields = '__all__'
+        exclude = {
+            'user_acc',
+        }
         widgets = {
             'user_id': forms.HiddenInput(),
             'first_name':Input(attrs={'class':'form-control'}),
@@ -19,9 +20,6 @@ class CustomerForm(ModelForm):
             'email':Input(attrs={'class':'form-control'}),
             'citizen_id':Input(attrs={'class':'form-control'}),
             'dob':Input(attrs={'class':'form-control','type':'date'}),
-        }
-        exclude = {
-            'user_acc',
         }
         labels = {
             'first_name' : 'ชื่อ',
@@ -33,7 +31,6 @@ class CustomerForm(ModelForm):
         email = self.cleaned_data.get('email')
         citizen_id = self.cleaned_data.get('citizen_id')
         cus_id = self.cleaned_data.get('cus_id')
-        print(cus_id)
         if ((Customer.objects.filter(email=email).exclude(pk=cus_id)).exists()):
             self.add_error('email',"Email exists")
         if not citizen_id.isdigit():
@@ -65,14 +62,11 @@ class PledgingForm(ModelForm):
 class GoldForm(ModelForm):
     gold_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
     class Meta:
-        
         model = Gold
         fields = ['weight', 'goldtype']
         widgets = {
-            
             'weight':Input(attrs={'class':'form-control'}),
             'goldtype':Select(attrs={'class':'form-control mb-5'}),
-            
         }
         labels = {
             'weight' : 'น้ำหนักทอง',
