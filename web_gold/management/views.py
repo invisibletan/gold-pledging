@@ -358,9 +358,10 @@ def edit_admin(request,admin_id):
             admin.first_name=form.cleaned_data['first_name']
             admin.last_name=form.cleaned_data['last_name']
             admin.email=form.cleaned_data['email']
-            admin.password=form.cleaned_data['password1']
+            admin.set_password(form.cleaned_data["password1"])
             admin.save()
             msg = 'แก้ไขสำเร็จ'
+            return redirect('index')
         else:
             msg = ''
     else:
