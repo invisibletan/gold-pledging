@@ -22,7 +22,7 @@ urlpatterns = [
     #Log
     path('log', log, name='log'),
     # Other
-    path('delete_gold/<int:gold_id>/<int:pled_id>',delete_gold, name='delete_gold'),
+    path('delete_gold/<int:gold_id>',delete_gold, name='delete_gold'),
     path('edit_admin/<int:admin_id>', edit_admin, name='edit_admin'),
     # APIs
     path('pledging_api', pledging_api, name='pledging_api'),

@@ -10,7 +10,7 @@
 
         <div class="card-body ">
             <div class='mb-3' style='text-align:center;position:relative'>
-                <div style='position:absolute;top:0;left:0;'>รหัสจำนำทอง : {{ p.id|stringformat:"05d"}}</div>
+                <div style='position:absolute;top:0;left:0;'>รหัสจำนำทอง : {{ p.id}}</div>
                 <h4>รายละเอียดรายการจำนำ</h4>
             </div>
             <div class="row">
@@ -79,83 +79,87 @@
                     <p>{{i.weight}} กรัม</p>
                 </div>
                 <div class='col-1' style="text-align: right;">
-                <a href="{% url 'delete_gold' gold_id=i.id pled_id=p.id%}" class="btn btn-danger"><i class="far fa-trash-alt"></i></a></div>
+                <button onclick="popup('{{i.id}}')"class="btn btn-danger"><i class="far fa-trash-alt"></i></button></div>
             </div>
             {% endfor %}
 
         </div>
             <div style='display:flex'>
             <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'edit_pledging' pled_id=p.id %}" class="btn btn-warning" ><i class="fas fa-edit"></i> แก้ไขรายการจำนำ</a>
-            <button style='flex-basis:0;flex-grow:1;flex-shrink:1'  class="btn btn-danger"><i class="far fa-trash-alt"></i> ลบรายการจำนำ</button>
+            <button style='flex-basis:0;flex-grow:1;flex-shrink:1' onclick="popup('pled')" class="btn btn-danger"><i class="far fa-trash-alt"></i> ลบรายการจำนำ</button>
         </div>
 
     </div>
     <script>
-        // function popup() {
-        //     let id = {{ p.id }}
-        //     const swalWithBootstrapButtons = Swal.mixin({
-        //         customClass: {
-        //             confirmButton: 'btn btn-success ',
-        //             cancelButton: 'btn btn-danger mr-5'
-        //         },
-        //         buttonsStyling: false
-        //     })
+        function popup(del) {
+            let peld_id = "{{p.id }}"
+            let cus_id = "{{p.cus_id.id }}"
+            let chk = (del==='pled')?1:0
+            let url = (del==='pled')?'/delete_pledging/' + peld_id:'/delete_gold/' + del
+            let button = event.currentTarget
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success ',
+                    cancelButton: 'btn btn-danger mr-5'
+                },
+                buttonsStyling: false
+            })
 
-        //     swalWithBootstrapButtons.fire({
-        //         title: 'คุณต้องการลบรายการนี้หรือไม่?',
-        //         text: "ถ้าคุณลบรายการนี้ จะไม่สามาถกู้คืนได้",
-        //         icon: 'warning',
-        //         showCancelButton: true,
-        //         confirmButtonText: 'ยืนยันการลบ',
-        //         cancelButtonText: 'ไม่ต้องการลบ',
-        //         reverseButtons: true
-        //     }).then((result) => {
+            swalWithBootstrapButtons.fire({
+                title: 'คุณต้องการลบรายการนี้หรือไม่?',
+                text: "ถ้าคุณลบรายการนี้ จะไม่สามาถกู้คืนได้",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยันการลบ',
+                cancelButtonText: 'ไม่ต้องการลบ',
+                reverseButtons: true
+            }).then((result) => {
 
-        //         if (result.value) {
+                if (result.value) {
                     
-        //             let id = button.getAttribute('del_id')
-        //             console.log(button)
-        //             console.log(id)
-        //             axios.delete('/delete_pledging/' + id)
+                    axios.delete(url)
 
-        //                 .then(function (response) {
-        //                     // handle success
-        //                     let del = button.parentElement.parentElement
-        //                     del.remove()
-
-        //                     console.log(response.data);
-        //                 })
-        //                 .catch(function (error) {
-        //                     Swal.fire({
-        //                         icon: 'error',
-        //                         title: 'Oops...',
-        //                         text: 'Something went wrong!',
-        //                     }).then((result) => {
-        //                         if (result.value) {
-        //                             location.reload();
-        //                         }
-        //                     })
+                        .then(function (response) {
+                            // handle success
+                        })
+                        .catch(function (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            }).then((result) => {
+                                if (result.value) {
+                                    location.reload();
+                                }
+                            })
                             
-        //                     console.log(error);
-        //                 })
-        //             swalWithBootstrapButtons.fire(
-        //                 'Deleted!',
-        //                 'การลบของคุณสำเร็จ',
-        //                 'success'
-        //             )
+                            console.log(error);
+                        })
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'การลบของคุณสำเร็จ',
+                        'success'
+                    ).then((result) => {
+                        if (chk){
+                        document.location.href = "{% url 'view_customer' cus_id=999999 %}".replace(/999999/, cus_id.toString());}
+                        else{
+                            let del = button.parentElement.parentElement
+                            del.remove()
+                        }
+                    })
 
-        //         } else if (
-        //             /* Read more about handling dismissals below */
-        //             result.dismiss === Swal.DismissReason.cancel
-        //         ) {
-        //             swalWithBootstrapButtons.fire(
-        //                 'Cancelled',
-        //                 'คุณได้ทำการยกเลิกการลบ',
-        //                 'error'
-        //             )
-        //         }
-        //     })
-        // }
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'คุณได้ทำการยกเลิกการลบ',
+                        'error'
+                    )
+                }
+            })
+        }
     </script>
 </div>
 </center>

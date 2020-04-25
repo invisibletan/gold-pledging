@@ -75,7 +75,7 @@
             var cell1 = row.insertCell(-1);
             var cell2 = row.insertCell(-1);
             var time = datetime.split(/-|T|[.]/)
-            var time = `วันที่ : ${time[2]}/${time[1]}/${time[0]} เวลา : ${time[3]} น.`
+            var time = `วันที่ : ${time[2]}/${time[1]}/${time[0]} เวลา : ${time[3].substring(0, time[3].length-3)} น.`
             var txt = `${first_name_cus} ${last_name_cus} ${tran[detail]} ทำรายการโดย ${first_name_user} ${last_name_user}`
             if (tbody.children.length > length_data) {
                 tbody.firstChild.remove()

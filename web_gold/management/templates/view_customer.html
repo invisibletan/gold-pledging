@@ -73,8 +73,69 @@
         <div style='display:flex'>
             <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'add_pledging' customer_id=cus.id %}" class="btn btn-success" ><i class="fas fa-folder-plus"></i> เพิ่มรายการจำนำ </a>
             <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'edit_customer' cus_id=cus.id %}" class="btn btn-warning" ><i class="fas fa-edit"></i> แก้ไขข้อมูลลูกค้า</a>
-            <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'delete_customer' cus_id=cus.id%}"class="btn btn-danger"><i class="far fa-trash-alt"></i> ลบข้อมูลลูกค้า</a>
+            <button style='flex-basis:0;flex-grow:1;flex-shrink:1' onclick="popup()" class="btn btn-danger"><i class="far fa-trash-alt"></i> ลบข้อมูลลูกค้า</button>
         </div>
     </div>
+    <script>
+        function popup() {
+            let cus_id = "{{cus.id }}"
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success ',
+                    cancelButton: 'btn btn-danger mr-5'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'คุณต้องการลบรายการนี้หรือไม่?',
+                text: "ถ้าคุณลบรายการนี้ จะไม่สามาถกู้คืนได้",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยันการลบ',
+                cancelButtonText: 'ไม่ต้องการลบ',
+                reverseButtons: true
+            }).then((result) => {
+
+                if (result.value) {
+                    axios.delete('/delete_customer/' + cus_id)
+
+                        .then(function (response) {
+                            // handle success
+                        })
+                        .catch(function (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            }).then((result) => {
+                                if (result.value) {
+                                    location.reload();
+                                }
+                            })
+                            
+                            console.log(error);
+                        })
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'การลบของคุณสำเร็จ',
+                        'success'
+                    ).then((result) => {
+                        document.location.href = "{% url 'customers' %}"
+                    })
+
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'คุณได้ทำการยกเลิกการลบ',
+                        'error'
+                    )
+                }
+            })
+        }
+    </script>
 </div>
 {% endblock %}

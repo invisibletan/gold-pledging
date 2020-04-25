@@ -112,7 +112,7 @@ def pledging_api(request):
                 pledging = pledging.filter(expire_date__gte=s_date)
             if e_date  != '' and e_date is not None:
                 pledging = pledging.filter(expire_date__lte=e_date)
-            
+        pledging = pledging.order_by('id')    
         serializer =  PledgingSerializer(pledging, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -125,7 +125,7 @@ def customers_api(request):
         # cus = Customer.objects.filter(Q(first_name__icontains=find)|(Q(last_name__icontains=find))|(Q(id__icontains=find)))
         find = request.query_params['find'].split()
         find.append('') if find == [] else 0
-        cus = Customer.objects.filter(reduce(lambda x, y: x | y, [(Q(first_name__icontains=word))|(Q(last_name__icontains=word))|(Q(id__icontains=word)) for word in find]))
+        cus = Customer.objects.filter(reduce(lambda x, y: x | y, [(Q(first_name__icontains=word))|(Q(last_name__icontains=word))|(Q(id__icontains=word)) for word in find])).order_by('id')
         serializer =  CustomerSerializer(cus, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 @csrf_exempt
@@ -155,7 +155,7 @@ def log_api(request):
             log = log.filter(datetime__year__gte=s_date[0],datetime__month__gte=s_date[1],datetime__day__gte=s_date[2])
         if '' not in e_date  and e_date is not None:
             log = log.filter(datetime__year__lte=e_date[0],datetime__month__lte=e_date[1],datetime__day__lte=e_date[2])
-        
+        log = log.order_by('-datetime')
         
         serializer =  LogSerializer(log, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -175,6 +175,7 @@ def log(request):
 
 def view_customer(request, cus_id):
     view_cus = Customer.objects.get(pk=cus_id)
+    view_cus.id = "%05d" %view_cus.id
     view_pledging = Pledging.objects.filter(cus_id=cus_id)
     return render(request, 'view_customer.html', context={'cus': view_cus, 'p': view_pledging})
 
@@ -190,6 +191,7 @@ def delete_customer(request, cus_id):
         cus = Customer.objects.get(pk=cus_id)
         cus.delete()
     return HttpResponse(status=200)
+
 @csrf_exempt
 def delete_pledging(request, pled_id):
     if request.method == 'DELETE':
@@ -203,7 +205,7 @@ def add_customer(request):
         if form.is_valid():
             customer = form.save()
             # create user
-            user = User.objects.create_user(username = '%d'%(customer.id))
+            user = User.objects.create_user(username = '%05d'%(customer.id))
             user.set_password(customer.citizen_id)
             group = Group.objects.get(name='customer')
             user.groups.add(group)
@@ -339,10 +341,12 @@ def edit_pledging(request, pled_id):
     return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2,'status':0, 'msg':''})
 
 
-def delete_gold(request, gold_id, pled_id):
-    gold = Gold.objects.get(pk=gold_id)
-    gold.delete()
-    return redirect('view_pledging', pled_id=pled_id)
+@csrf_exempt
+def delete_gold(request, gold_id):
+    if request.method == 'DELETE':
+        gold = Gold.objects.get(pk=gold_id)
+        gold.delete()
+    return HttpResponse(status=200)
 
 def edit_admin(request,admin_id):
     admin = User.objects.get(pk=admin_id)

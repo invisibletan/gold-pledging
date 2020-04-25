@@ -78,16 +78,14 @@
             }).then((result) => {
 
                 if (result.value) {
-                    
+
                     let id = button.getAttribute('del_id')
                     console.log(button)
                     console.log(id)
                     axios.delete('/delete_pledging/' + id)
 
                         .then(function (response) {
-                            // handle success
-                            let del = button.parentElement.parentElement
-                            del.remove()
+                            
 
                             console.log(response.data);
                         })
@@ -101,14 +99,18 @@
                                     location.reload();
                                 }
                             })
-                            
+
                             console.log(error);
                         })
                     swalWithBootstrapButtons.fire(
                         'Deleted!',
                         'การลบของคุณสำเร็จ',
                         'success'
-                    )
+                    ).then((result) => {
+                        let del = button.parentElement.parentElement
+                        del.remove()
+
+                    })
 
                 } else if (
                     /* Read more about handling dismissals below */
