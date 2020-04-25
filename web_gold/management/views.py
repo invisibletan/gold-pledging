@@ -21,6 +21,7 @@ from django.db.models import Q
 
 from django.conf import settings
 from django.core.mail import send_mail
+from functools import reduce
 # Create your views here.
 
 
@@ -100,7 +101,11 @@ def pledging_api(request):
 def customers_api(request):
     if request.method == 'GET':
         find = request.query_params['find']
+       
         cus = Customer.objects.filter(Q(first_name__icontains=find)|(Q(last_name__icontains=find))|(Q(id__icontains=find)))
+        # find = request.query_params['find'].split()
+        # find.append('') if find == [] else 0
+        # cus = Customer.objects.filter(reduce(lambda x, y: x | y, [(Q(first_name__icontains=word))|(Q(last_name__icontains=word))|(Q(id__icontains=word)) for word in find]))
         serializer =  CustomerSerializer(cus, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -171,9 +176,9 @@ def add_pledging(request, customer_id):
                     weight=form.cleaned_data['weight'],
                     goldtype=form.cleaned_data['goldtype'])
                 user = User.objects.get(pk=request.user.id)
-                log = Log.objects.create(
-                    user_id=user,
-                    detail=pled.cus_id.first_name+" "+pled.cus_id.last_name+" จำนำทอง " +"ทำรายการโดย "+user.first_name+" "+user.last_name)
+                # log = Log.objects.create(
+                #     user_id=user,
+                #     detail=pled.cus_id.first_name+" "+pled.cus_id.last_name+" จำนำทอง " +"ทำรายการโดย "+user.first_name+" "+user.last_name)
             return redirect('view_customer', cus_id=pled.cus_id.id)
     else:
         if customer_id:

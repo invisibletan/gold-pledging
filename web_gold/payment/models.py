@@ -24,11 +24,13 @@ class Trantype(enum.Enum):
     redeem = 1
     slacken = 2
     getmore = 3
+    add_pledging = 4
     __labels__ = {
         re_contract: ugettext_lazy("ต่อดอก"),
         redeem: ugettext_lazy("ไถ่คืน"),
         slacken: ugettext_lazy("ผ่อนจ่าย"),
         getmore: ugettext_lazy("เอาเพิ่ม"),
+        add_pledging: ugettext_lazy("ทำรายการจำนำ"),
     }
 
 class Payment(models.Model):
