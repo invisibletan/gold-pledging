@@ -6,7 +6,7 @@
     <center>
         <div class="col mt-2">
             <input id="find" type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh" value=''
-            onkeyup="showTable()">
+                onkeyup="showTable()">
             <div class="form-check form-check-inline mt-4">
                 <input id="inlineCheckbox1" class="form-check-input" type="checkbox" data-toggle="toggle"
                     data-style="mr-1 ml-5" data-onstyle="success" data-offstyle="secondary" onchange="showTable()"
@@ -66,21 +66,23 @@
         </tbody>
     </table>
     <script>
+        
         function createThis(datetime, first_name_cus, last_name_cus, first_name_user, last_name_user, detail, length_data) {
             tran = ['ทำการต่อดอก', 'ทำการไถ่คืน', 'ทำการผ่อนจ่าย', 'ทำการเอาเพิ่ม', 'ทำการนำทองมาจำนำ']
             var tbody = document.getElementsByTagName('tbody')[0]
-            
+
             var row = tbody.insertRow(-1);
             var cell1 = row.insertCell(-1);
             var cell2 = row.insertCell(-1);
             var time = datetime.split(/-|T|[.]/)
             var time = `วันที่ : ${time[2]}/${time[1]}/${time[0]} เวลา : ${time[3]} น.`
             var txt = `${first_name_cus} ${last_name_cus} ${tran[detail]} ทำรายการโดย ${first_name_user} ${last_name_user}`
-            if (tbody.children.length > length_data){
-                tbody.firstChild.remove()}
+            if (tbody.children.length > length_data) {
+                tbody.firstChild.remove()
+            }
             cell1.append(time)
             cell2.append(txt)
-               
+
 
         }
         showTable()
@@ -93,8 +95,8 @@
             let e_date = document.getElementById('enddate').value;
 
 
-            
-           
+
+
             let out_enum = 5
             let chk_add = out_enum
             let chk_re = out_enum

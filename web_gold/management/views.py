@@ -2,26 +2,28 @@
 import email
 from builtins import object
 from datetime import date, timedelta
+from functools import reduce
 
+from django.conf import settings
 # from background_task import background
 from django.contrib.admin.helpers import AdminForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, User
+from django.core.mail import send_mail
+from django.db.models import Q
 from django.forms import formset_factory
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .form import AdminForm, CustomerForm, GoldForm, PledgingForm
-from .models import Customer, Gold, Pledging, Log
-from .serializers import  PledgingSerializer, CustomerSerializer, LogSerializer
-from django.db.models import Q
 
-from django.conf import settings
-from django.core.mail import send_mail
-from functools import reduce
+from .form import AdminForm, CustomerForm, GoldForm, PledgingForm
+from .models import Customer, Gold, Log, Pledging
+from .serializers import CustomerSerializer, LogSerializer, PledgingSerializer
+
 # Create your views here.
 
 
@@ -183,15 +185,18 @@ def view_pledging(request, pled_id):
     view_gold = Gold.objects.filter(pledging_id=pled_id)
     return render(request, 'view_pledging.html', context={'p': view_pled, 'gold': view_gold})
 
+@csrf_exempt
 def delete_customer(request, cus_id):
-    cus = Customer.objects.get(pk=cus_id)
-    cus.delete()
-    return redirect(to='customers')
-
+    if request.method == 'DELETE':
+        cus = Customer.objects.get(pk=cus_id)
+        cus.delete()
+    return HttpResponse(status=200)
+@csrf_exempt
 def delete_pledging(request, pled_id):
-    pled = Pledging.objects.get(pk=pled_id)
-    pled.delete()
-    return redirect(to='pledging')
+    if request.method == 'DELETE':
+        pled = Pledging.objects.get(pk=pled_id)
+        pled.delete()
+    return HttpResponse(status=200)
 
 def add_customer(request):
     if request.method == 'POST':

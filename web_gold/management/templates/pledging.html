@@ -4,7 +4,7 @@
 <div class="container">
     <center>
         <input id="find" type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh" value=''
-        onkeyup="showTable()">
+            onkeyup="showTable()">
         <div class="form-check form-check-inline mt-4 row">
             <input id="inlineCheckbox1" class="form-check-input" type="checkbox" data-toggle="toggle"
                 data-style="mr-1 ml-5" data-onstyle="danger" data-offstyle="secondary" onchange="showTable()" checked>
@@ -17,13 +17,12 @@
             <label for="inlineCheckbox3" class="form-check-label">ไถ่คืนเรียบร้อย</label>
         </div>
         <div class="form-group row mt-4">
-            <div class="col-md-1"> 
+            <div class="col-md-1">
                 <i class='far fa-calendar-alt' style="font-size: 2.3rem;"></i>
-              </div>
+            </div>
             <input id="pled_date" class="form-check-input col-md-2" type="checkbox" data-toggle="toggle"
-                 data-onstyle="success" data-offstyle="danger" data-on="Pledge Date"
-                data-off="Expire Date" checked>
-            
+                data-onstyle="success" data-offstyle="danger" data-on="Pledge Date" data-off="Expire Date" checked>
+
             <label for="stratdate" class="col-md-1 col-form-label">ตั้งแต่ : </label>
             <div class="col-md-3">
                 <input type="date" class="form-control" id="stratdate">
@@ -33,7 +32,8 @@
                 <input type="date" class="form-control" id="enddate">
             </div>
             <div class="col-md-1">
-                <button type="button" class="btn btn-primary" onclick="showTable()"><i class='fas fa-search'></i></button>
+                <button type="button" class="btn btn-primary" onclick="showTable()"><i
+                        class='fas fa-search'></i></button>
             </div>
 
         </div>
@@ -57,8 +57,73 @@
     </table>
 
     <script>
+        function popup() {
+            let button = event.currentTarget
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success ',
+                    cancelButton: 'btn btn-danger mr-5'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'คุณต้องการลบรายการนี้หรือไม่?',
+                text: "ถ้าคุณลบรายการนี้ จะไม่สามาถกู้คืนได้",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยันการลบ',
+                cancelButtonText: 'ไม่ต้องการลบ',
+                reverseButtons: true
+            }).then((result) => {
+
+                if (result.value) {
+                    
+                    let id = button.getAttribute('del_id')
+                    console.log(button)
+                    console.log(id)
+                    axios.delete('/delete_pledging/' + id)
+
+                        .then(function (response) {
+                            // handle success
+                            let del = button.parentElement.parentElement
+                            del.remove()
+
+                            console.log(response.data);
+                        })
+                        .catch(function (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            }).then((result) => {
+                                if (result.value) {
+                                    location.reload();
+                                }
+                            })
+                            
+                            console.log(error);
+                        })
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'การลบของคุณสำเร็จ',
+                        'success'
+                    )
+
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'คุณได้ทำการยกเลิกการลบ',
+                        'error'
+                    )
+                }
+            })
+        }
         function createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging, length_data) {
-            
+
             var contact = ['หมดสัญญา', 'อยู่ในสัญญา', 'ไถ่คืนเรียบร้อย']
 
             var table = document.getElementsByTagName('tbody')[0];
@@ -75,9 +140,10 @@
             a1.href = "{% url 'view_pledging' pled_id=999999 %}".replace(/999999/, id.toString());
             let i1 = document.createElement('i')
             i1.className = "far fa-eye"
-            let a2 = document.createElement('a')
+            let a2 = document.createElement('button')
             a2.className = "btn btn-danger"
-            a2.href = "{% url 'delete_pledging' pled_id=999999 %}".replace(/999999/, id.toString());
+            a2.setAttribute('del_id', id)
+            a2.addEventListener("click", popup)
             let i2 = document.createElement('i')
             i2.className = "far fa-trash-alt"
             a1.append(i1)
@@ -92,15 +158,16 @@
             cell6.append(contact[type_pledging])
             cell7.append(a1)
             cell7.append(a2)
-            if (table.children.length > length_data){
-                table.firstChild.remove()}
+            if (table.children.length > length_data) {
+                table.firstChild.remove()
+            }
         }
         showTable()
         function showTable() {
             let s_date = document.getElementById('stratdate').value;
             let e_date = document.getElementById('enddate').value;
-            let pled_date =($('#pled_date').prop('checked'))?1:0;
-     
+            let pled_date = ($('#pled_date').prop('checked')) ? 1 : 0;
+
             document.getElementsByTagName('tbody')[0].remove();
             var table = document.getElementsByTagName('table')[0]
             var tbody = document.createElement("TBODY");
@@ -120,7 +187,7 @@
             }
             var find = document.getElementById("find").value;
 
-            axios.get('/pledging_api', { params: { find: find, chk_out: chk_out, chk_in: chk_in, chk_re: chk_re,s_date:s_date,e_date:e_date,pled_date:pled_date } })
+            axios.get('/pledging_api', { params: { find: find, chk_out: chk_out, chk_in: chk_in, chk_re: chk_re, s_date: s_date, e_date: e_date, pled_date: pled_date } })
 
                 .then(function (response) {
                     // handle success
