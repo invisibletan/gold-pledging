@@ -19,7 +19,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
+from django.contrib.auth.decorators import permission_required, login_required
 from .form import AdminForm, CustomerForm, GoldForm, PledgingForm
 from .models import Customer, Gold, Log, Pledging
 from .serializers import CustomerSerializer, LogSerializer, PledgingSerializer
@@ -53,7 +53,7 @@ from .serializers import CustomerSerializer, LogSerializer, PledgingSerializer
 
             
 # update_queue_status(repeat=1)
-
+@login_required
 def index(request):
     if not request.user.is_authenticated:
         return redirect('login')
@@ -68,10 +68,16 @@ def my_login(request):
         user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
+            next_url = request.POST.get('next_url')
+            if next_url:
+                return redirect(next_url)
             return redirect('index')
         else:
             context['username'] = username
             context['error'] = 'username or password is invalid'
+    next_url = request.GET.get('next')
+    if next_url:
+        context['next_url'] = next_url
     return render(request, template_name='login.html', context=context)
 
 @login_required
@@ -79,6 +85,7 @@ def my_logout(request):
     logout(request)
     return redirect('login')
 
+@login_required
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def pledging_api(request):
@@ -116,6 +123,7 @@ def pledging_api(request):
         serializer =  PledgingSerializer(pledging, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+@login_required
 @csrf_exempt
 @api_view(['GET', 'POST'])  
 def customers_api(request):
@@ -128,6 +136,8 @@ def customers_api(request):
         cus = Customer.objects.filter(reduce(lambda x, y: x | y, [(Q(first_name__icontains=word))|(Q(last_name__icontains=word))|(Q(id__icontains=word)) for word in find])).order_by('id')
         serializer =  CustomerSerializer(cus, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+@login_required
 @csrf_exempt
 @api_view(['GET', 'POST'])
 def log_api(request):
@@ -161,30 +171,34 @@ def log_api(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
+@login_required
 def pledging(request):
     return render(request, 'pledging.html')
 
+@login_required
 def customers(request):
     return render(request, 'customers.html')
 
+@login_required
 def log(request):
     return render(request, 'log.html')
 
 
-
+@login_required
 def view_customer(request, cus_id):
     view_cus = Customer.objects.get(pk=cus_id)
     view_cus.id = "%05d" %view_cus.id
     view_pledging = Pledging.objects.filter(cus_id=cus_id)
     return render(request, 'view_customer.html', context={'cus': view_cus, 'p': view_pledging})
 
+@login_required
 def view_pledging(request, pled_id):
     view_pled = Pledging.objects.get(pk=pled_id)
     
     view_gold = Gold.objects.filter(pledging_id=pled_id)
     return render(request, 'view_pledging.html', context={'p': view_pled, 'gold': view_gold})
 
+@login_required
 @csrf_exempt
 def delete_customer(request, cus_id):
     if request.method == 'DELETE':
@@ -192,6 +206,7 @@ def delete_customer(request, cus_id):
         cus.delete()
     return HttpResponse(status=200)
 
+@login_required
 @csrf_exempt
 def delete_pledging(request, pled_id):
     if request.method == 'DELETE':
@@ -199,6 +214,7 @@ def delete_pledging(request, pled_id):
         pled.delete()
     return HttpResponse(status=200)
 
+@login_required
 def add_customer(request):
     if request.method == 'POST':
         form = CustomerForm(request.POST)
@@ -220,6 +236,7 @@ def add_customer(request):
         })
     return render(request, template_name='add_customer.html',context={'form': form, 'status':1})
 
+@login_required
 def add_pledging(request, customer_id):
     form2 = formset_factory(GoldForm)
     if request.method == 'POST':
@@ -253,6 +270,7 @@ def add_pledging(request, customer_id):
             })
     return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2, 'status':1})
 
+@login_required
 def edit_customer(request, cus_id):
     cus = Customer.objects.get(pk=cus_id)
     msg = ''
@@ -284,6 +302,8 @@ def edit_customer(request, cus_id):
     print(form)
     return render(request, template_name='add_customer.html',context={'form': form, 'status':0, 'msg':''})
 
+
+@login_required
 def edit_pledging(request, pled_id):
     
     pled = Pledging.objects.get(pk=pled_id)
@@ -340,7 +360,7 @@ def edit_pledging(request, pled_id):
         form2 = form2(initial=data)
     return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2,'status':0, 'msg':''})
 
-
+@login_required
 @csrf_exempt
 def delete_gold(request, gold_id):
     if request.method == 'DELETE':
@@ -348,6 +368,7 @@ def delete_gold(request, gold_id):
         gold.delete()
     return HttpResponse(status=200)
 
+@login_required
 def edit_admin(request,admin_id):
     admin = User.objects.get(pk=admin_id)
     msg = ''
@@ -361,7 +382,6 @@ def edit_admin(request,admin_id):
             admin.set_password(form.cleaned_data["password1"])
             admin.save()
             msg = 'แก้ไขสำเร็จ'
-            return redirect('index')
         else:
             msg = ''
     else:
