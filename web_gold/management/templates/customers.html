@@ -6,7 +6,7 @@
     <center>
         <div class="col mt-2">
             <input id="find" type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh" value=''
-                onInput="find()">
+            onkeyup="find()">
             <a class="btn btn-warning mt-4 col-md-3" href="{% url 'add_customer' %}"><i class="fas fa-plus mr-1"></i>เพิ่มลูกค้า</a>
         </div>
     </center>
@@ -33,7 +33,7 @@
         </tbody>
     </table>
     <script>
-        function createThis(id, first_name, last_name){
+        function createThis(id, first_name, last_name, length_data){
             console.log( document.getElementsByTagName('tbody')[0])
             var table =  document.getElementsByTagName('tbody')[0];
             var row = table.insertRow(-1);
@@ -58,22 +58,19 @@
             cell3.append(last_name)
             cell4.append(a1)
             cell4.append(a2)
+            if (table.children.length > length_data){
+                table.firstChild.remove()}
             
     
         }
         find()
         function find(){
-            console.log('run')
-            var e =document.getElementsByTagName('tbody')[0];
-            var child =  e.lastElementChild;
-            while (child) { 
-    
-                e.removeChild(child);
-                child = e.lastElementChild; 
-    
-            }
+            document.getElementsByTagName('tbody')[0].remove();
+            var table = document.getElementsByTagName('table')[0]
+            var tbody = document.createElement("TBODY");
+            table.append(tbody)
+
             var find = document.getElementById("find").value;
-            console.log(find)
             axios.get('/customers_api', {params:{find:find}})
     
             .then(function (response) {
@@ -85,7 +82,7 @@
                     let first_name = item.first_name
                     let last_name = item.last_name
 
-                    createThis(id, first_name, last_name)
+                    createThis(id, first_name, last_name, response.data.length)
                  }
                 )
     

@@ -81,14 +81,16 @@ def my_logout(request):
 @api_view(['GET', 'POST'])
 def pledging_api(request):
     if request.method == 'GET':
-        find = request.query_params['find']
+        # find = request.query_params['find']
         if 'customer' in [group.name for group in request.user.groups.all()]:
             customer = Customer.objects.get(user_acc=request.user)
             pledging = Pledging.objects.filter(cus_id=customer)
         else:
             pledging = Pledging.objects.all()
-        
-        pledging = pledging.filter(Q(cus_id__first_name__icontains=find)|(Q(cus_id__last_name__icontains=find))|(Q(id__icontains=find)))
+
+        find = request.query_params['find'].split()
+        find.append('') if find == [] else 0
+        pledging = pledging.filter(reduce(lambda x, y: x | y, [(Q(cus_id__first_name__icontains=word))|(Q(cus_id__last_name__icontains=word))|(Q(id__icontains=word)) for word in find]))
         chk_out = int(request.query_params['chk_out'])
         chk_in = int(request.query_params['chk_in'])
         chk_re = int(request.query_params['chk_re'])
@@ -116,12 +118,12 @@ def pledging_api(request):
 @api_view(['GET', 'POST'])  
 def customers_api(request):
     if request.method == 'GET':
-        find = request.query_params['find']
+        # find = request.query_params['find']
        
-        cus = Customer.objects.filter(Q(first_name__icontains=find)|(Q(last_name__icontains=find))|(Q(id__icontains=find)))
-        # find = request.query_params['find'].split()
-        # find.append('') if find == [] else 0
-        # cus = Customer.objects.filter(reduce(lambda x, y: x | y, [(Q(first_name__icontains=word))|(Q(last_name__icontains=word))|(Q(id__icontains=word)) for word in find]))
+        # cus = Customer.objects.filter(Q(first_name__icontains=find)|(Q(last_name__icontains=find))|(Q(id__icontains=find)))
+        find = request.query_params['find'].split()
+        find.append('') if find == [] else 0
+        cus = Customer.objects.filter(reduce(lambda x, y: x | y, [(Q(first_name__icontains=word))|(Q(last_name__icontains=word))|(Q(id__icontains=word)) for word in find]))
         serializer =  CustomerSerializer(cus, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 @csrf_exempt
@@ -150,7 +152,7 @@ def log_api(request):
         if '' not in s_date  and s_date is not None:
             log = log.filter(datetime__year__gte=s_date[0],datetime__month__gte=s_date[1],datetime__day__gte=s_date[2])
         if '' not in e_date  and e_date is not None:
-            log = log.filter(datetime__year__lte=s_date[0],datetime__month__lte=s_date[1],datetime__day__lte=s_date[2])
+            log = log.filter(datetime__year__lte=e_date[0],datetime__month__lte=e_date[1],datetime__day__lte=e_date[2])
         
         
         serializer =  LogSerializer(log, many=True)
