@@ -6,18 +6,30 @@ from management.models import *
 class PaymentType(enum.Enum):
     online = 0
     offline = 1
-
+    __labels__ = {
+        online: ugettext_lazy("ออนไลน์"),
+        offline: ugettext_lazy("ออฟไลน์"),
+    }
 class Status(enum.Enum):
     wait = 0
     approve = 1
     reject = 2
-
+    __labels__ = {
+        wait: ugettext_lazy("รอดำเนินการ"),
+        approve: ugettext_lazy("ยืนยันเรียบร้อย"),
+        reject: ugettext_lazy("ปฎิเสธการทำรายการ"),
+    }
 class Trantype(enum.Enum):
     re_contract = 0
     redeem = 1
     slacken = 2
     getmore = 3
-
+    __labels__ = {
+        re_contract: ugettext_lazy("ต่อดอก"),
+        redeem: ugettext_lazy("ไถ่คืน"),
+        slacken: ugettext_lazy("ผ่อนจ่าย"),
+        getmore: ugettext_lazy("เอาเพิ่ม"),
+    }
 
 class Payment(models.Model):
     type_payment = enum.EnumField(PaymentType, default=PaymentType.offline)
