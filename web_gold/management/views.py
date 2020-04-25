@@ -371,7 +371,6 @@ def delete_gold(request, gold_id):
 @login_required
 def edit_admin(request,admin_id):
     admin = User.objects.get(pk=admin_id)
-    msg = ''
     if request.method == 'POST':
         form = AdminForm(request.POST)
         if form.is_valid():
@@ -381,9 +380,8 @@ def edit_admin(request,admin_id):
             admin.email=form.cleaned_data['email']
             admin.set_password(form.cleaned_data["password1"])
             admin.save()
-            msg = 'แก้ไขสำเร็จ'
-        else:
-            msg = ''
+            logout(request)
+            return redirect('http://127.0.0.1:8000/login/?edit_admit=pass')
     else:
         form = AdminForm(initial={
             'admin_id': admin.id,
@@ -393,5 +391,5 @@ def edit_admin(request,admin_id):
             'email' : admin.email,
             
         })
-    context = {'form': form, 'msg': msg}
+    context = {'form': form}
     return render(request, 'edit_admin.html', context)

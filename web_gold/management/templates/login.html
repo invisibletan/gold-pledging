@@ -1,20 +1,33 @@
 {% extends "base.html" %}
 {% block content %}
-    <form class="form-inline" method="POST" action="{% url 'login' %}">
-        {% csrf_token %}
-        <div class="container w-25">
-            <div class="form-group row mb-3">
-                <input type="text" class="form-control col" id="username" name="username" placeholder="Username" value="{{username}}">
-            </div>
-            <div class="form-group row mb-3">
-                <input type="password" class="form-control col" id="password" name="password" placeholder="Password">
-            </div>
-            {% if error %}
-                <p class="row mb-3 text-danger text-justify">{{ error }}</p>
-            {% endif %}
-            <div class="form-group row mb-3">
-                <button class="btn btn-info btn-block col" type="submit">Log In</button>
-            </div>
+<form class="form-inline" method="POST" action="{% url 'login' %}">
+    {% csrf_token %}
+    <div class="container w-25">
+        <div class="form-group row mb-3">
+            <input type="text" class="form-control col" id="username" name="username" placeholder="Username"
+                value="{{username}}">
         </div>
-    </form>
+        <div class="form-group row mb-3">
+            <input type="password" class="form-control col" id="password" name="password" placeholder="Password">
+        </div>
+        {% if error %}
+        <p class="row mb-3 text-danger text-justify">{{ error }}</p>
+        {% endif %}
+        <div class="form-group row mb-3">
+            <button class="btn btn-info btn-block col" type="submit">Log In</button>
+        </div>
+    </div>
+</form>
+<script>
+    var url_string = window.location.href
+    var url = new URL(url_string);
+    var pass = url.searchParams.get("edit_admit");
+    if (pass) {
+        Swal.fire({
+            icon: 'success',
+            title: 'แก้ไขข้อมูลสำเร็จ!',
+            text: 'กรุณาเข้าสู่ระบบใหม่',
+        })
+    }
+</script>
 {% endblock %}
