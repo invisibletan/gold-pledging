@@ -92,7 +92,23 @@ def pledging_api(request):
         chk_out = int(request.query_params['chk_out'])
         chk_in = int(request.query_params['chk_in'])
         chk_re = int(request.query_params['chk_re'])
+        s_date = request.query_params['s_date']
+        e_date = request.query_params['e_date']
+        pled_date = int(request.query_params['pled_date'])
         pledging = pledging.filter(type_pledging__in=[chk_out, chk_in, chk_re])
+        print(pled_date)
+        if (pled_date):
+            if s_date != '' and s_date is not None:
+                pledging = pledging.filter(pledge_date__gte=s_date)
+            if e_date  != '' and e_date is  not None:
+                pledging = pledging.filter(pledge_date__lte=e_date)
+        else:
+            print('wow')
+            if s_date != '' and s_date is not None:
+                pledging = pledging.filter(expire_date__gte=s_date)
+            if e_date  != '' and e_date is not None:
+                pledging = pledging.filter(expire_date__lte=e_date)
+            
         serializer =  PledgingSerializer(pledging, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -112,22 +128,31 @@ def customers_api(request):
 @api_view(['GET', 'POST'])
 def log_api(request):
     if request.method == 'GET':
-        find = request.query_params['find']
+        # find = request.query_params['find']
         if 'customer' in [group.name for group in request.user.groups.all()]:
             customer = Customer.objects.get(user_acc=request.user)
             log = Log.objects.filter(cus_id=customer)
         else:
             log = Log.objects.all()
-        log = log.filter(Q(cus_id__first_name__icontains=find)|(Q(cus_id__last_name__icontains=find)))
+        find = request.query_params['find'].split()
+        find.append('') if find == [] else 0
+        log = log.filter(reduce(lambda x, y: x | y, [(Q(cus_id__first_name__icontains=word))|(Q(cus_id__last_name__icontains=word))|(Q(user_id__last_name__icontains=word))|(Q(user_id__first_name__icontains=word)) for word in find]))
+        # log = log.filter(Q(cus_id__first_name__icontains=find)|(Q(cus_id__last_name__icontains=find)))
         chk_add = int(request.query_params['chk_add'])
         chk_re = int(request.query_params['chk_re'])
         chk_redeem = int(request.query_params['chk_redeem'])
         chk_sla = int(request.query_params['chk_sla'])
         chk_get = int(request.query_params['chk_get'])
+        s_date = request.query_params['s_date'].split('-')
+        e_date = request.query_params['e_date'].split('-')
+
         log = log.filter(detail__in=[chk_add, chk_re, chk_redeem, chk_sla, chk_get])
-        # find = request.query_params['find'].split()
-        # find.append('') if find == [] else 0
-        # cus = Customer.objects.filter(reduce(lambda x, y: x | y, [(Q(first_name__icontains=word))|(Q(last_name__icontains=word))|(Q(id__icontains=word)) for word in find]))
+        if '' not in s_date  and s_date is not None:
+            log = log.filter(datetime__year__gte=s_date[0],datetime__month__gte=s_date[1],datetime__day__gte=s_date[2])
+        if '' not in e_date  and e_date is not None:
+            log = log.filter(datetime__year__lte=s_date[0],datetime__month__lte=s_date[1],datetime__day__lte=s_date[2])
+        
+        
         serializer =  LogSerializer(log, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 

@@ -3,23 +3,43 @@
 {% load static %}
 <div class="container">
     <center>
-        <div class="col mt-2">
-            <input id="find" type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh" value=''
-                onInput="showTable()">
-            <div class="form-check form-check-inline mt-4">
-                <input id="inlineCheckbox1" class="form-check-input" type="checkbox" data-toggle="toggle"
-                    data-style="mr-1 ml-5" data-onstyle="danger" data-offstyle="secondary"  onchange="showTable()" checked>
-                <label for="inlineCheckbox1" class="form-check-label">หมดสัญญา</label>
-                <input id="inlineCheckbox2" class="form-check-input" type="checkbox" data-toggle="toggle"
-                    data-style="mr-1 ml-4" data-onstyle="primary" data-offstyle="secondary" onchange="showTable()" checked>
-                <label for="inlineCheckbox2" class="form-check-label">อยู่ในสัญญา</label>
-                <input id="inlineCheckbox3" class="form-check-input" type="checkbox" data-toggle="toggle"
-                    data-style="mr-1 ml-4" data-onstyle="success" data-offstyle="secondary" onchange="showTable()" checked>
-                <label for="inlineCheckbox3" class="form-check-label">ไถ่คืนเรียบร้อย</label>
+        <input id="find" type="text" name="text" class="form-control ml-2 col-md-6" placeholder="Seacrh" value=''
+            onInput="showTable()">
+        <div class="form-check form-check-inline mt-4 row">
+            <input id="inlineCheckbox1" class="form-check-input" type="checkbox" data-toggle="toggle"
+                data-style="mr-1 ml-5" data-onstyle="danger" data-offstyle="secondary" onchange="showTable()" checked>
+            <label for="inlineCheckbox1" class="form-check-label">หมดสัญญา</label>
+            <input id="inlineCheckbox2" class="form-check-input" type="checkbox" data-toggle="toggle"
+                data-style="mr-1 ml-4" data-onstyle="primary" data-offstyle="secondary" onchange="showTable()" checked>
+            <label for="inlineCheckbox2" class="form-check-label">อยู่ในสัญญา</label>
+            <input id="inlineCheckbox3" class="form-check-input" type="checkbox" data-toggle="toggle"
+                data-style="mr-1 ml-4" data-onstyle="success" data-offstyle="secondary" onchange="showTable()" checked>
+            <label for="inlineCheckbox3" class="form-check-label">ไถ่คืนเรียบร้อย</label>
+        </div>
+        <div class="form-group row mt-4">
+            <div class="col-md-1"> 
+                <i class='far fa-calendar-alt' style="font-size: 2.3rem;"></i>
+              </div>
+            <input id="pled_date" class="form-check-input col-md-2" type="checkbox" data-toggle="toggle"
+                 data-onstyle="success" data-offstyle="danger" data-on="Pledge Date"
+                data-off="Expire Date" checked>
+            
+            <label for="stratdate" class="col-md-1 col-form-label">ตั้งแต่ : </label>
+            <div class="col-md-3">
+                <input type="date" class="form-control" id="stratdate">
+            </div>
+            <label for="enddate" class="col-md-1 col-form-label">ถึงวันที่ : </label>
+            <div class="col-md-3">
+                <input type="date" class="form-control" id="enddate">
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-primary" onclick="showTable()"><i class='fas fa-search'></i></button>
             </div>
 
+        </div>
+
     </center>
-    <table class="table mt-5" style="text-align:center;" id='myTable'>
+    <table class="table mt-4" style="text-align:center;" id='myTable'>
         <thead class="thead-dark" id="head_table">
             <tr>
                 <th scope="col">ID</th>
@@ -37,10 +57,8 @@
     </table>
 
     <script>
-        $(function () {
-            $('inlineCheckbox1').bootstrapToggle('on');
-        })
         function createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging) {
+            
             var contact = ['หมดสัญญา', 'อยู่ในสัญญา', 'ไถ่คืนเรียบร้อย']
             console.log(document.getElementsByTagName('tbody')[0])
             var table = document.getElementsByTagName('tbody')[0];
@@ -77,6 +95,10 @@
         }
         showTable()
         function showTable() {
+            let s_date = document.getElementById('stratdate').value;
+            let e_date = document.getElementById('enddate').value;
+            let pled_date =($('#pled_date').prop('checked'))?1:0;
+     
             var e = document.getElementsByTagName('tbody')[0];
             var child = e.lastElementChild;
             while (child) {
@@ -89,18 +111,18 @@
             let chk_out = out_enum
             let chk_in = out_enum
             let chk_re = out_enum
-            if ($('#inlineCheckbox1').prop('checked')){
+            if ($('#inlineCheckbox1').prop('checked')) {
                 chk_out = 0
             }
-            if ($('#inlineCheckbox2').prop('checked')){
+            if ($('#inlineCheckbox2').prop('checked')) {
                 chk_in = 1
             }
-            if ($('#inlineCheckbox3').prop('checked')){
+            if ($('#inlineCheckbox3').prop('checked')) {
                 chk_re = 2
             }
             var find = document.getElementById("find").value;
 
-            axios.get('/pledging_api', { params: { find: find , chk_out:chk_out, chk_in:chk_in, chk_re:chk_re} })
+            axios.get('/pledging_api', { params: { find: find, chk_out: chk_out, chk_in: chk_in, chk_re: chk_re,s_date:s_date,e_date:e_date,pled_date:pled_date } })
 
                 .then(function (response) {
                     // handle success
@@ -114,7 +136,7 @@
                         let expire_date = item.expire_date
                         let type_pledging = item.type_pledging
 
-                        let li = createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging)
+                        createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging)
                     }
                     )
 

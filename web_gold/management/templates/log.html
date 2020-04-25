@@ -9,33 +9,53 @@
                 onInput="showTable()">
             <div class="form-check form-check-inline mt-4">
                 <input id="inlineCheckbox1" class="form-check-input" type="checkbox" data-toggle="toggle"
-                    data-style="mr-1 ml-5" data-onstyle="primary" data-offstyle="secondary" onchange="showTable()"
+                    data-style="mr-1 ml-5" data-onstyle="success" data-offstyle="secondary" onchange="showTable()"
                     checked>
                 <label for="inlineCheckbox1" class="form-check-label">ทำรายการจำนำ</label>
 
                 <input id="inlineCheckbox2" class="form-check-input" type="checkbox" data-toggle="toggle"
-                    data-style="mr-1 ml-4" data-onstyle="primary" data-offstyle="secondary" onchange="showTable()"
+                    data-style="mr-1 ml-4" data-onstyle="success" data-offstyle="secondary" onchange="showTable()"
                     checked>
                 <label for="inlineCheckbox2" class="form-check-label">ทำการต่อดอก</label>
 
                 <input id="inlineCheckbox3" class="form-check-input" type="checkbox" data-toggle="toggle"
-                    data-style="mr-1 ml-4" data-onstyle="primary" data-offstyle="secondary" onchange="showTable()"
+                    data-style="mr-1 ml-4" data-onstyle="success" data-offstyle="secondary" onchange="showTable()"
                     checked>
                 <label for="inlineCheckbox3" class="form-check-label">ทำการไถ่คืน</label>
 
                 <input id="inlineCheckbox4" class="form-check-input" type="checkbox" data-toggle="toggle"
-                    data-style="mr-1 ml-4" data-onstyle="primary" data-offstyle="secondary" onchange="showTable()"
+                    data-style="mr-1 ml-4" data-onstyle="success" data-offstyle="secondary" onchange="showTable()"
                     checked>
                 <label for="inlineCheckbox4" class="form-check-label">ทำการผ่อนจ่าย</label>
 
                 <input id="inlineCheckbox5" class="form-check-input" type="checkbox" data-toggle="toggle"
-                    data-style="mr-1 ml-4" data-onstyle="primary" data-offstyle="secondary" onchange="showTable()"
+                    data-style="mr-1 ml-4" data-onstyle="success" data-offstyle="secondary" onchange="showTable()"
                     checked>
                 <label for="inlineCheckbox5" class="form-check-label">ทำการเอาเพิ่ม</label>
             </div>
         </div>
+        <div class="form-group row mt-5 ">
+            <div class="col-md-1 mr-0">
+                <i class='far fa-calendar-alt ' style="font-size: 2.3rem;"></i>
+            </div>
+
+
+            <label for="stratdate" class="col-md-2 col-form-label">ตั้งแต่วันที่ : </label>
+            <div class="col-md-3">
+                <input type="date" class="form-control" id="stratdate">
+            </div>
+            <label for="enddate" class="col-md-2 col-form-label">ถึงวันที่ : </label>
+            <div class="col-md-3">
+                <input type="date" class="form-control" id="enddate">
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-primary" onclick="showTable()"><i
+                        class='fas fa-search'></i></button>
+            </div>
+
+        </div>
     </center>
-    <table class="table mt-5" style="text-align:center;">
+    <table class="table mt-4" style="text-align:center;">
         <thead class="thead-dark">
             <tr>
                 <th scope="col">Datetime</th>
@@ -46,6 +66,34 @@
         </tbody>
     </table>
     <script>
+        // let check = 1;
+        // function hide(datetime, first_name_cus, last_name_cus, first_name_user, last_name_user, detail) {
+        //     table = document.getElementsByTagName("table");
+        //     tr = document.getElementsByTagName("tr");
+        //     console.log(tr)
+        //     // Loop through all table rows, and hide those who don't match the search query
+        //     for (i = 0; i < tr.length; i++) {
+        //         td = tr[i].getElementsByTagName("td");
+        //         for(j = 0; j < td.length; j++){
+        //             tdd = tr[i].getElementsByTagName("td")[j];
+                    
+        //             if (tdd) {
+        //                 txtValue = tdd.textContent || tdd.innerText;
+        //                 var time = datetime.split(/-|T|[.]/)
+        //                 var time = `วันที่ : ${time[2]}/${time[1]}/${time[0]} เวลา : ${time[3]} น.`
+        //                 var txt = `${first_name_cus} ${last_name_cus} ${tran[detail]} ทำรายการโดย ${first_name_user} ${last_name_user}`
+        //                 if (time == txtValue || txt == txtValue) {
+        //                     tr[i].style.display = "";
+        //                 } else {
+        //                     tr[i].style.display = "none";
+        //                 }
+        //             }
+        //             console.log(txtValue)
+        //         }
+    
+        //     }
+        // }
+        
         function createThis(datetime, first_name_cus, last_name_cus, first_name_user, last_name_user, detail) {
             tran = ['ทำการต่อดอก', 'ทำการไถ่คืน', 'ทำการผ่อนจ่าย', 'ทำการเอาเพิ่ม', 'ทำการนำทองมาจำนำ']
             console.log(document.getElementsByTagName('tbody')[0])
@@ -63,39 +111,42 @@
         }
         showTable()
         function showTable() {
-            console.log('run')
-            var e = document.getElementsByTagName('tbody')[0];
-            var child = e.lastElementChild;
-            while (child) {
+            let s_date = document.getElementById('stratdate').value;
+            let e_date = document.getElementById('enddate').value;
 
-                e.removeChild(child);
-                child = e.lastElementChild;
 
-            }
+            // var e = document.getElementsByTagName('tbody')[0];
+            // var child = e.lastElementChild;
+            // while (child) {
+
+            //     e.removeChild(child);
+            //     child = e.lastElementChild;
+
+            // }
             let out_enum = 5
             let chk_add = out_enum
             let chk_re = out_enum
             let chk_redeem = out_enum
             let chk_sla = out_enum
             let chk_get = out_enum
-            if ($('#inlineCheckbox1').prop('checked')){
+            if ($('#inlineCheckbox1').prop('checked')) {
                 chk_add = 4
             }
-            if ($('#inlineCheckbox2').prop('checked')){
+            if ($('#inlineCheckbox2').prop('checked')) {
                 chk_re = 0
             }
-            if ($('#inlineCheckbox3').prop('checked')){
+            if ($('#inlineCheckbox3').prop('checked')) {
                 chk_redeem = 1
             }
-            if ($('#inlineCheckbox4').prop('checked')){
+            if ($('#inlineCheckbox4').prop('checked')) {
                 chk_sla = 2
             }
-            if ($('#inlineCheckbox5').prop('checked')){
+            if ($('#inlineCheckbox5').prop('checked')) {
                 chk_get = 3
             }
             var find = document.getElementById("find").value;
             console.log(find)
-            axios.get('/log_api', { params: { find: find, chk_add:chk_add, chk_re:chk_re, chk_redeem:chk_redeem,chk_sla:chk_sla, chk_get:chk_get  } })
+            axios.get('/log_api', { params: { find: find, chk_add: chk_add, chk_re: chk_re, chk_redeem: chk_redeem, chk_sla: chk_sla, chk_get: chk_get, s_date: s_date, e_date: e_date } })
 
                 .then(function (response) {
                     // handle success
@@ -108,8 +159,7 @@
                         let first_name_user = item.first_name_user
                         let last_name_user = item.last_name_user
                         let detail = item.detail
-
-                        let li = createThis(datetime, first_name_cus, last_name_cus, first_name_user, last_name_user, detail)
+                        createThis(datetime, first_name_cus, last_name_cus, first_name_user, last_name_user, detail)
                     }
                     )
 
