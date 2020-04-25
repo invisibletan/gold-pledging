@@ -19,10 +19,13 @@ urlpatterns = [
     path('view_pledging/<int:pled_id>', view_pledging, name='view_pledging'),
     path('delete_pledging/<int:pled_id>', delete_pledging, name='delete_pledging'),
     path('edit_pledging/<int:pled_id>', edit_pledging, name='edit_pledging'),
+    #Log
+    path('log', log, name='log'),
     # Other
     path('delete_gold/<int:gold_id>/<int:pled_id>',delete_gold, name='delete_gold'),
     path('edit_admin/<int:admin_id>', edit_admin, name='edit_admin'),
     # APIs
     path('pledging_api', pledging_api, name='pledging_api'),
     path('customers_api', customers_api, name='customers_api'),
+    path('log_api', log_api, name='log_api'),
 ]

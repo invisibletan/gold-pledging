@@ -16,7 +16,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .form import AdminForm, CustomerForm, GoldForm, PledgingForm
 from .models import Customer, Gold, Pledging, Log
-from .serializers import  PledgingSerializer, CustomerSerializer
+from .serializers import  PledgingSerializer, CustomerSerializer, LogSerializer
 from django.db.models import Q
 
 from django.conf import settings
@@ -108,6 +108,30 @@ def customers_api(request):
         # cus = Customer.objects.filter(reduce(lambda x, y: x | y, [(Q(first_name__icontains=word))|(Q(last_name__icontains=word))|(Q(id__icontains=word)) for word in find]))
         serializer =  CustomerSerializer(cus, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def log_api(request):
+    if request.method == 'GET':
+        find = request.query_params['find']
+        if 'customer' in [group.name for group in request.user.groups.all()]:
+            customer = Customer.objects.get(user_acc=request.user)
+            log = Log.objects.filter(cus_id=customer)
+        else:
+            log = Log.objects.all()
+        log = log.filter(Q(cus_id__first_name__icontains=find)|(Q(cus_id__last_name__icontains=find)))
+        chk_add = int(request.query_params['chk_add'])
+        chk_re = int(request.query_params['chk_re'])
+        chk_redeem = int(request.query_params['chk_redeem'])
+        chk_sla = int(request.query_params['chk_sla'])
+        chk_get = int(request.query_params['chk_get'])
+        log = log.filter(detail__in=[chk_add, chk_re, chk_redeem, chk_sla, chk_get])
+        # find = request.query_params['find'].split()
+        # find.append('') if find == [] else 0
+        # cus = Customer.objects.filter(reduce(lambda x, y: x | y, [(Q(first_name__icontains=word))|(Q(last_name__icontains=word))|(Q(id__icontains=word)) for word in find]))
+        serializer =  LogSerializer(log, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 
 def pledging(request):
     return render(request, 'pledging.html')
@@ -116,7 +140,10 @@ def customers(request):
     return render(request, 'customers.html')
 
 def log(request):
-    return 
+    return render(request, 'log.html')
+
+
+
 def view_customer(request, cus_id):
     view_cus = Customer.objects.get(pk=cus_id)
     view_cus.id = "%05d" %view_cus.id
@@ -175,10 +202,11 @@ def add_pledging(request, customer_id):
                     pledging_id=Pledging.objects.get(pk=pled.id),
                     weight=form.cleaned_data['weight'],
                     goldtype=form.cleaned_data['goldtype'])
-                user = User.objects.get(pk=request.user.id)
-                # log = Log.objects.create(
-                #     user_id=user,
-                #     detail=pled.cus_id.first_name+" "+pled.cus_id.last_name+" จำนำทอง " +"ทำรายการโดย "+user.first_name+" "+user.last_name)
+            user = User.objects.get(pk=request.user.id)
+            log = Log.objects.create(
+                    user_id=user,
+                    detail=4,
+                    cus_id=pled.cus_id)
             return redirect('view_customer', cus_id=pled.cus_id.id)
     else:
         if customer_id:

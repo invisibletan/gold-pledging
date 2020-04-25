@@ -29,17 +29,7 @@ class GoldType(enum.Enum):
         ring: ugettext_lazy("แหวน"),
         bracelet: ugettext_lazy("กำไล"),
     }
-class GoldType(enum.Enum):
-    necklace = 0
-    Bracelet = 1
-    ring = 2
-    bracelet = 3
-    __labels__ = {
-        necklace: ugettext_lazy("สร้อยคอ"),
-        Bracelet: ugettext_lazy("สร้อยข้อมือ"),
-        ring: ugettext_lazy("แหวน"),
-        bracelet: ugettext_lazy("กำไล"),
-    }
+
 class Customer(models.Model):
     user_acc = models.ForeignKey(User, on_delete=models.PROTECT, null=True, related_name='user')
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -83,7 +73,7 @@ from payment.models import Trantype
 class Log(models.Model):
     cus_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
-    datetime = models.DateField(auto_now_add=True,blank=False,null=False)
+    datetime = models.DateTimeField(auto_now_add=True,blank=False,null=False)
     detail = enum.EnumField(Trantype, default=Trantype.re_contract)
     
 
