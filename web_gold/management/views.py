@@ -387,6 +387,7 @@ def delete_gold(request, gold_id):
 
 @login_required
 def edit_admin(request,admin_id):
+    msg = ''
     admin = User.objects.get(pk=admin_id)
     if request.method == 'POST':
         form = AdminForm(request.POST)
@@ -399,6 +400,8 @@ def edit_admin(request,admin_id):
             admin.save()
             logout(request)
             return redirect('http://127.0.0.1:8000/login/?edit_admit=pass')
+        else:
+            msg = 'no_pass'
     else:
         form = AdminForm(initial={
             'admin_id': admin.id,
@@ -408,5 +411,5 @@ def edit_admin(request,admin_id):
             'email' : admin.email,
             
         })
-    context = {'form': form}
+    context = {'form': form, 'msg':msg}
     return render(request, 'edit_admin.html', context)

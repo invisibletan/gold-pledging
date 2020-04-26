@@ -16,6 +16,12 @@
             แก้ไขข้อมูล {% endif %}</button>
     </form>
     <script>
+        error_ul = document.getElementsByClassName("errorlist");
+        
+        for (let i = 0; i < error_ul.length; i++){
+            console.log(error_ul[i])
+            $(error_ul[i]).insertAfter(error_ul[i].nextElementSibling);
+        }
         let chk = '{{msg}}'
         if (chk == 'pass') {
             Swal.fire({

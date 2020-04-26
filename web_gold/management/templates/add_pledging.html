@@ -8,7 +8,6 @@
         {% else %}
             <h3>แก้ไขรายการจำนำ</h3>
         {% endif %}
-            <h5>{{ msg }}</h5>
     </center>
     <form method="POST">
         {% csrf_token %}
@@ -31,6 +30,12 @@
         </button>
     </form>
     <script>
+        error_ul = document.getElementsByClassName("errorlist");
+        
+        for (let i = 0; i < error_ul.length; i++){
+            console.log(error_ul[i])
+            $(error_ul[i]).insertAfter(error_ul[i].nextElementSibling);
+        }
         $('#add_more').click(function () {
             var form_idx = $('#id_form-TOTAL_FORMS').val();
             $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
