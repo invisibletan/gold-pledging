@@ -159,7 +159,9 @@
             cell5.append(date2[2] + " / " + date2[1] + " / " + date2[0])
             cell6.append(contact[type_pledging])
             cell7.append(a1)
+            // {%  if user.is_staff %}
             cell7.append(a2)
+            // {% endif %}
             if (table.children.length > length_data) {
                 table.firstChild.remove()
             }

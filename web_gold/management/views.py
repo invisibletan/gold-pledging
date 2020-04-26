@@ -36,20 +36,32 @@ from .serializers import CustomerSerializer, LogSerializer, PledgingSerializer
 #     global k
 #     print(t)
 #     out_date = Pledging.objects.filter(expire_date=date.today()).exclude(type_pledging=0)
-#     email =[i['cus_id__email'] for i in list(out_date.values('cus_id__email'))]
-#     email = list(set(email))
+#     out_date_list =list((out_date.values('cus_id__email', 'cus_id__id', 'id', 'expire_date')))
+#     cus_list = dict()
+#     for od in out_date_list:
+#         cus_id = od["cus_id__id"]
+#         if cus_id in cus_list:
+#             cus_list[cus_id].append(od)
+#         else:
+#             cus_list[cus_id] = [od]
+    
 #     from_email = settings.EMAIL_HOST_USER
-#     if k:
-#         send_mail(
-#         subject='รายการจำนำหมดสัญญา',
-#         message='ลูกค้าไม่สามารถไถ่รายการจำนำ ภายในระยะเวลาสัญญา',
-#         from_email=from_email,
-#         recipient_list=email,
-#         fail_silently=False)
-#         print(email)
-#         k = 0
-#     out_date = out_date.update(type_pledging=0)
-#     t += 1
+#     for cus in cus_list:
+#         message = ", ".join([str(pledging["id"]) for pledging in cus_list[cus]])
+#         message = 'รายการจำนำ รหัสที่ '+ message + ' ' + 'ครบกำหนดสัญญาแล้ว \r โทร : xxx-xxx-xxx'
+#         email_list = [cus_list[cus][0]['cus_id__email']]
+#         print(email_list)
+#         if k <= 2:
+#             send_mail(
+#             subject='เรียนเพื่อทราบ',
+#             message= message ,
+#             from_email=from_email,
+#             recipient_list=email_list,
+#             fail_silently=False)
+#             print(email)
+#             k += 1
+#         # out_date = out_date.update(type_pledging=0)
+#         t += 1
 
             
 # update_queue_status(repeat=1)
@@ -187,7 +199,6 @@ def log(request):
 @login_required
 def view_customer(request, cus_id):
     view_cus = Customer.objects.get(pk=cus_id)
-    view_cus.id = "%05d" %view_cus.id
     view_pledging = Pledging.objects.filter(cus_id=cus_id)
     return render(request, 'view_customer.html', context={'cus': view_cus, 'p': view_pledging})
 
@@ -216,6 +227,8 @@ def delete_pledging(request, pled_id):
 
 @login_required
 def add_customer(request):
+    msg = ''
+    cus_id = ''
     if request.method == 'POST':
         form = CustomerForm(request.POST)
         if form.is_valid():
@@ -229,15 +242,20 @@ def add_customer(request):
             # relation to user
             customer.user_acc = user
             customer.save()
-            return redirect('view_customer', cus_id=customer.id)
+            msg = 'pass_add'
+            cus_id = customer.id
+        else:
+            msg = 'no_pass'
     else:
         form = CustomerForm(initial={
             'user_id' : request.user
         })
-    return render(request, template_name='add_customer.html',context={'form': form, 'status':1})
+    return render(request, template_name='add_customer.html',context={'form': form, 'status':1, 'msg':msg, 'cus_id':cus_id})
 
 @login_required
 def add_pledging(request, customer_id):
+    msg = ''
+    pled_id = ''
     form2 = formset_factory(GoldForm)
     if request.method == 'POST':
         form = PledgingForm(request.POST)
@@ -257,7 +275,10 @@ def add_pledging(request, customer_id):
                     user_id=user,
                     detail=4,
                     cus_id=pled.cus_id)
-            return redirect('view_customer', cus_id=pled.cus_id.id)
+            msg = 'pass_add'
+            pled_id = pled.id
+        else:
+            msg = 'no_pass'
     else:
         if customer_id:
             form = PledgingForm(initial={
@@ -268,7 +289,7 @@ def add_pledging(request, customer_id):
             form = PledgingForm(initial={
             'user_id' : request.user
             })
-    return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2, 'status':1})
+    return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2, 'status':1, 'msg':msg, 'pled_id':pled_id})
 
 @login_required
 def edit_customer(request, cus_id):
@@ -283,13 +304,11 @@ def edit_customer(request, cus_id):
             cus.citizen_id=request.POST.get('citizen_id')
             cus.dob=request.POST.get('dob')
             cus.save()
-            msg = 'แก้ไขสำเร็จ'
-            return redirect('customers')
+            msg = 'pass'
         else:
-            msg = ''
+            msg = 'no_pass'
      
     else:
-        print(cus.id)
         form = CustomerForm(initial={
             'cus_id' : cus.id,
             'user_id' : request.user,
@@ -299,13 +318,11 @@ def edit_customer(request, cus_id):
             'citizen_id' : cus.citizen_id,
             'dob' : cus.dob
         })
-    print(form)
-    return render(request, template_name='add_customer.html',context={'form': form, 'status':0, 'msg':''})
+    return render(request, template_name='add_customer.html',context={'form': form, 'status':0, 'msg':msg})
 
 
 @login_required
 def edit_pledging(request, pled_id):
-    
     pled = Pledging.objects.get(pk=pled_id)
     gold = Gold.objects.filter(pledging_id=pled_id)
     num = len(gold)
@@ -323,8 +340,9 @@ def edit_pledging(request, pled_id):
     if request.method == 'POST':
         form = PledgingForm(request.POST)
         form2 = form2(request.POST)
+        print(form)
         if form.is_valid() and form2.is_valid():
-            pled.cus_id=Customer.objects.get(pk=request.POST.get('cus_id'))
+            
             pled.pledge_balance=request.POST.get('pledge_balance')
             pled.contract_term=request.POST.get('contract_term')
             if  date.today() !=date.today() + timedelta(days=int(pled.contract_term)):
@@ -345,10 +363,9 @@ def edit_pledging(request, pled_id):
                         pledging_id=Pledging.objects.get(pk=pled.id),
                         weight=f.cleaned_data['weight'],
                         goldtype=f.cleaned_data['goldtype'])
-            msg = 'แก้ไขสำเร็จ'
-            return redirect('view_pledging', pled_id=pled_id)
+            msg = 'pass'
         else:
-            msg = ''
+            msg = 'no_pass'
     else:
         form = PledgingForm(initial={
             'user_id' : request.user,
@@ -358,7 +375,7 @@ def edit_pledging(request, pled_id):
             'expire_date' : pled.expire_date,
         })
         form2 = form2(initial=data)
-    return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2,'status':0, 'msg':''})
+    return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2,'status':0, 'msg':msg, 'pled_id':pled_id})
 
 @login_required
 @csrf_exempt

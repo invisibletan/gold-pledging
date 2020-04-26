@@ -47,7 +47,7 @@ class PledgingForm(ModelForm):
         widgets = {
             'user_id': forms.HiddenInput(),
             'type_pledging': forms.HiddenInput(),
-            'cus_id':Input(attrs={'class':'form-control'}),
+            'cus_id':Input(attrs={'class':'form-control', 'readonly':'readonly'}),
             'pledge_balance':Input(attrs={'class':'form-control'}),
             'contract_term':Input(attrs={'class':'form-control'}),
             'dob':Input(attrs={'class':'form-control','type':'date'}),
