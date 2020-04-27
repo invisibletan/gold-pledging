@@ -157,7 +157,12 @@
             let date2 = expire_date.split("-");
             cell4.append(date[2] + " / " + date[1] + " / " + date[0])
             cell5.append(date2[2] + " / " + date2[1] + " / " + date2[0])
-            cell6.append(contact[type_pledging])
+            var h = document.createElement("H5"); 
+            var contact_span = document.createElement("SPAN");
+            contact_span.className = (type_pledging==0)?'badge badge-danger':(type_pledging==1)?'badge badge-primary':'badge badge-success'
+            contact_span.append(String(contact[type_pledging]))
+            h.append(contact_span)
+            cell6.append(h)
             cell7.append(a1)
             // {%  if user.is_staff %}
             cell7.append(a2)
