@@ -126,7 +126,7 @@
         }
         function createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging, length_data) {
 
-            var contact = ['หมดสัญญา', 'อยู่ในสัญญา', 'ไถ่คืนเรียบร้อย']
+            var contact = [' หมดสัญญา ', ' อยู่ในสัญญา ', 'ไถ่คืนเรียบร้อย']
 
             var table = document.getElementsByTagName('tbody')[0];
             var row = table.insertRow(-1);
@@ -159,6 +159,7 @@
             cell5.append(date2[2] + " / " + date2[1] + " / " + date2[0])
             var h = document.createElement("H5"); 
             var contact_span = document.createElement("SPAN");
+            contact_span.style.width = "6rem";
             contact_span.className = (type_pledging==0)?'badge badge-danger':(type_pledging==1)?'badge badge-primary':'badge badge-success'
             contact_span.append(String(contact[type_pledging]))
             h.append(contact_span)
