@@ -20,6 +20,7 @@
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <style>
         /* kanit-regular - thai_latin */
@@ -91,24 +92,24 @@
             <ul class="navbar-nav ml-auto mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item ">
-                        <a class="nav-link" href="{% url 'pledging' %}">รายการจำนำ</a>
+                        <a class="nav-link" href="{% url 'pledging' %}"><i class="fa fa-home"></i> รายการจำนำ</a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" href="{% url 'log' %}">ประวัติทำธุรกรรม</a>
+                        <a class="nav-link" href="{% url 'log' %}"><i class="fa fa-list"></i> ประวัติทำธุรกรรม</a>
                     </li>
                     <li class="nav-item ">
-                        <a class="nav-link" href="{% url 'log' %}">ประวัติทำธุรกรรม</a>
+                        <a class="nav-link" href="{% url 'log' %}"><i class="fa fa-list"></i> ประวัติทำธุรกรรม</a>
                     </li>
                     {%  if user.is_staff %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'customers' %}">ข้อมูลลูกค้า</a>
+                            <a class="nav-link" href="{% url 'customers' %}"><i class="fa fa-user"></i> ข้อมูลลูกค้า</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'edit_admin' admin_id=user.id%}">แก้ไขข้อมูล</a>
+                            <a class="nav-link" href="{% url 'edit_admin' admin_id=user.id%}"><i class="fa fa-users"></i> แก้ไขข้อมูล</a>
                         </li>
                     {% endif %}
                     <li class="nav-item text-uppercase">
-                        <a class="nav-link" href="{% url 'logout' %}">ออกจากระบบ</a>
+                        <a class="nav-link" href="{% url 'logout' %}"><i class="fa fa-power-off"></i> ออกจากระบบ</a>
                     </li>
                 {% endif %}
             </ul>
