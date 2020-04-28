@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Gold Pledging</title>
-    
+
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css'%}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css.map'%}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css'%}">
@@ -16,7 +16,8 @@
     <script src="https://use.fontawesome.com/releases/v5.12.0/js/all.js"></script>
     <script src="{% static 'js/jquery-3.4.1.min.js'%}"></script>
     <script src="{% static 'js/bootstrap.min.js'%}"></script>
-    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
+        rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
@@ -44,19 +45,23 @@
             url("{% static 'font/kanit-v5-thai_latin-regular.svg#Kanit'%}") format('svg');
             /* Legacy iOS */
         }
+
         /* Sticky footer styles */
         html {
             position: relative;
             min-height: 100%;
         }
+
         .errorlist {
             color: red;
         }
+
         body {
             /* Margin bottom by footer height */
             margin-bottom: 60px;
             font-family: 'Kanit';
         }
+
         .wrap {
             height: auto;
             margin: 0 auto -80px;
@@ -67,17 +72,19 @@
             box-sizing: border-box;
             overflow: auto;
         }
-        html, body {
+
+        html,
+        body {
             height: 100%;
         }
+
         body {
-            margin: 0px;
-            padding: 0px;
-            background-image: url('{% static 'img/bg.jpg'%}');
-            background-size: cover;
-            background-color:rgba(0, 0, 0, 0.5);
-            
+            /* background-image: url('{% static "img/bg.jpg"%}'); */
+
+            background: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 65%, #fad0c4 98%, #f5f5f5 100%);
+            background-attachment: fixed;
         }
+
         .footer {
             position: relative;
             bottom: 0;
@@ -88,37 +95,51 @@
             background-color: #f5f5f5;
             margin-top: 5%;
         }
-        #lazy-hover:hover{
-            text-shadow:  0 0 10px rgb(200, 255, 1), 0 0 20px rgba(255, 251, 3, 0.658), 0 0 30px rgb(255, 217, 2), 0 0 30px rgba(255, 251, 0, 0.829);
+        #fix-hover{
+            color:#e6e64c;
+        }
+        #fix-hover:hover {
+            color:#f5f5f5;
+            text-shadow: 0 0 10px rgb(255, 255, 194), 0 0 20px rgba(248, 246, 132, 0.836);
         }
     </style>
 </head>
+
 <body style="background-color:rgba(0, 0, 0, 0.9);">
-    <nav class="navbar navbar-expand-md navbar-dark" style="background-image: linear-gradient(to right, #434343 0%, black 100%);">
+    <nav class="navbar navbar-expand-md navbar-dark"
+        style="background-image: linear-gradient(to right, #434343 0%, black 100%);">
         <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
             <ul class="navbar-nav ml-auto mr-auto">
                 {% if user.is_authenticated %}
-                    <li class="nav-item ">
-                        <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'pledging' %}"><i class="fa fa-home"></i> รายการจำนำ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'payment' %}"><i class="fa fa-globe"></i> รายการชำระออนไลน์</a>
-                    <li class="nav-item ">
-                        <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'log' %}"><i class="fa fa-list"></i> ประวัติทำธุรกรรม</a>
-                    </li>
-                    {%  if user.is_staff %}
-                        <li class="nav-item">
-                            <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'customers' %}"><i class="fa fa-user"></i> ข้อมูลลูกค้า</a>
-                        </li>
-                        <li class="nav-item">
-                            <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'edit_admin' admin_id=user.id%}"><i class="fa fa-users"></i> แก้ไขข้อมูล</a>
-                        </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'logout' %}"><i class="fa fa-power-off"></i> ออกจากระบบ</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item"><h3 style="color:#e6e64c;">ร้านทองลิ้มเซ่งเฮง</h3></li>
+                <li class="nav-item ">
+                    <a id="fix-hover" class="nav-link "  href="{% url 'pledging' %}"><i
+                            class="fa fa-home"></i> รายการจำนำ</a>
+                </li>
+                <li class="nav-item">
+                    <a id="fix-hover" class="nav-link "  href="{% url 'payment' %}"><i
+                            class="fa fa-globe"></i> รายการชำระออนไลน์</a>
+                <li class="nav-item ">
+                    <a id="fix-hover" class="nav-link"  href="{% url 'log' %}"><i
+                            class="fa fa-list"></i> ประวัติทำธุรกรรม</a>
+                </li>
+                {%  if user.is_staff %}
+                <li class="nav-item">
+                    <a id="fix-hover" class="nav-link"  href="{% url 'customers' %}"><i
+                            class="fa fa-user"></i> ข้อมูลลูกค้า</a>
+                </li>
+                <li class="nav-item">
+                    <a id="fix-hover" class="nav-link" 
+                        href="{% url 'edit_admin' admin_id=user.id%}"><i class="fa fa-users"></i> แก้ไขข้อมูล</a>
+                </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a id="fix-hover" class="nav-link"  href="{% url 'logout' %}"><i
+                            class="fa fa-power-off"></i> ออกจากระบบ</a>
+                </li>
+                {% else %}#e6e64c;
+                <li class="nav-item">
+                    <h3 >ร้านทองลิ้มเซ่งเฮง</h3>
+                </li>
                 {% endif %}
             </ul>
         </div>
