@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<div class="container">
+    <center>
+        <input id="find" type="text" name="text" class="shadow form-control ml-2 col-md-6" placeholder="Seacrh" value=''
+            onkeyup="showTable()">
+        <div class=" form-check form-check-inline mt-4 row">
+            <input id="inlineCheckbox1" class="shadow form-check-input" type="checkbox" data-toggle="toggle"
+                data-style="mr-1 ml-5" data-onstyle="danger" data-offstyle="secondary" onchange="showTable()" checked>
+            <label for="inlineCheckbox1" class="form-check-label">หมดสัญญา</label>
+            <input id="inlineCheckbox2" class="shadow form-check-input" type="checkbox" data-toggle="toggle"
+                data-style="mr-1 ml-4" data-onstyle="primary" data-offstyle="secondary" onchange="showTable()" checked>
+            <label for="inlineCheckbox2" class="form-check-label">อยู่ในสัญญา</label>
+            <input id="inlineCheckbox3" class="shadow form-check-input" type="checkbox" data-toggle="toggle"
+                data-style="mr-1 ml-4" data-onstyle="success" data-offstyle="secondary" onchange="showTable()" checked>
+            <label for="inlineCheckbox3" class="form-check-label">ไถ่คืนเรียบร้อย</label>
+        </div>
+        <div class="form-group row mt-4">
+            <div class="col-md-1">
+                <i class='far fa-calendar-alt' style="font-size: 2.3rem;"></i>
+            </div>
+            <input id="pled_date" class="form-check-input col-md-2" type="checkbox" data-toggle="toggle"
+                data-onstyle="success" data-offstyle="danger" data-on="Pledge Date" data-off="Expire Date" checked>
+
+            <label for="stratdate" class="col-md-1 col-form-label">ตั้งแต่ : </label>
+            <div class="col-md-3">
+                <input type="date" class="shadow form-control" id="stratdate">
+            </div>
+            <label for="enddate" class="col-md-1 col-form-label">ถึงวันที่ : </label>
+            <div class="col-md-3">
+                <input type="date" class="shadow form-control" id="enddate">
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="shadow btn btn-primary" onclick="showTable()"><i
+                        class='fas fa-search'></i></button>
+            </div>
+
+        </div>
+
+    </center>
+    <div>
+    <table class="rounded shadow-lg table mt-4" style="text-align:center; background-color:white;" id='myTable'>
+        <thead class="thead-dark" id="head_table">
+            <tr class="rounded">
+                <th scope="col">ID</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Pledge Date</th>
+                <th scope="col">Expire Date</th>
+                <th scope="col">Pledging Type</th>
+                <th scope="col">Handle</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+    </div>
+
+    <script>
+        function popup() {
+            let button = event.currentTarget
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success ',
+                    cancelButton: 'btn btn-danger mr-5'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'คุณต้องการลบรายการนี้หรือไม่?',
+                text: "ถ้าคุณลบรายการนี้ จะไม่สามาถกู้คืนได้",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'ยืนยันการลบ',
+                cancelButtonText: 'ไม่ต้องการลบ',
+                reverseButtons: true
+            }).then((result) => {
+
+                if (result.value) {
+
+                    let id = button.getAttribute('del_id')
+                    console.log(button)
+                    console.log(id)
+                    axios.delete('/delete_pledging/' + id)
+
+                        .then(function (response) {
+                            
+
+                            console.log(response.data);
+                        })
+                        .catch(function (error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            }).then((result) => {
+                                if (result.value) {
+                                    location.reload();
+                                }
+                            })
+
+                            console.log(error);
+                        })
+                    swalWithBootstrapButtons.fire(
+                        'Deleted!',
+                        'การลบของคุณสำเร็จ',
+                        'success'
+                    ).then((result) => {
+                        let del = button.parentElement.parentElement
+                        del.remove()
+
+                    })
+
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'คุณได้ทำการยกเลิกการลบ',
+                        'error'
+                    )
+                }
+            })
+        }
+        function createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging, length_data) {
+
+            var contact = [' หมดสัญญา ', ' อยู่ในสัญญา ', 'ไถ่คืนเรียบร้อย']
+
+            var table = document.getElementsByTagName('tbody')[0];
+            var row = table.insertRow(-1);
+            var cell1 = row.insertCell(-1);
+            var cell2 = row.insertCell(-1);
+            var cell3 = row.insertCell(-1);
+            var cell4 = row.insertCell(-1);
+            var cell5 = row.insertCell(-1);
+            var cell6 = row.insertCell(-1);
+            var cell7 = row.insertCell(-1);
+            let a1 = document.createElement('a')
+            a1.className = "btn btn-primary mr-2"
+            a1.href = "{% url 'view_pledging' pled_id=999999 %}".replace(/999999/, id.toString());
+            let i1 = document.createElement('i')
+            i1.className = "far fa-eye"
+            let a2 = document.createElement('button')
+            a2.className = "btn btn-danger"
+            a2.setAttribute('del_id', id)
+            a2.addEventListener("click", popup)
+            let i2 = document.createElement('i')
+            i2.className = "far fa-trash-alt"
+            a1.append(i1)
+            a2.append(i2)
+            cell1.append(id)
+            cell2.append(first_name)
+            cell3.append(last_name)
+            let date = pledge_date.split("-");
+            let date2 = expire_date.split("-");
+            cell4.append(date[2] + " / " + date[1] + " / " + date[0])
+            cell5.append(date2[2] + " / " + date2[1] + " / " + date2[0])
+            var h = document.createElement("H5"); 
+            var contact_span = document.createElement("SPAN");
+            contact_span.style.width = "6rem";
+            contact_span.className = (type_pledging==0)?'badge badge-danger':(type_pledging==1)?'badge badge-primary':'badge badge-success'
+            contact_span.append(String(contact[type_pledging]))
+            h.append(contact_span)
+            cell6.append(h)
+            cell7.append(a1)
+            // {%  if user.is_staff %}
+            cell7.append(a2)
+            // {% endif %}
+            if (table.children.length > length_data) {
+                table.firstChild.remove()
+            }
+        }
+        showTable()
+        function showTable() {
+            let s_date = document.getElementById('stratdate').value;
+            let e_date = document.getElementById('enddate').value;
+            let pled_date = ($('#pled_date').prop('checked')) ? 1 : 0;
+
+            document.getElementsByTagName('tbody')[0].remove();
+            var table = document.getElementsByTagName('table')[0]
+            var tbody = document.createElement("TBODY");
+            table.append(tbody)
+            let out_enum = 3
+            let chk_out = out_enum
+            let chk_in = out_enum
+            let chk_re = out_enum
+            if ($('#inlineCheckbox1').prop('checked')) {
+                chk_out = 0
+            }
+            if ($('#inlineCheckbox2').prop('checked')) {
+                chk_in = 1
+            }
+            if ($('#inlineCheckbox3').prop('checked')) {
+                chk_re = 2
+            }
+            var find = document.getElementById("find").value;
+
+            axios.get('/pledging_api', { params: { find: find, chk_out: chk_out, chk_in: chk_in, chk_re: chk_re, s_date: s_date, e_date: e_date, pled_date: pled_date } })
+
+                .then(function (response) {
+                    // handle success
+                    items = response.data
+
+                    items.forEach((item) => {
+                        let id = item.id
+                        let first_name = item.first_name
+                        let last_name = item.last_name
+                        let pledge_date = item.pledge_date
+                        let expire_date = item.expire_date
+                        let type_pledging = item.type_pledging
+
+                        createThis(id, first_name, last_name, pledge_date, expire_date, type_pledging, response.data.length)
+                    }
+                    )
+
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+        }
+
+
+
+    </script>
+    <!-- <table class="table mt-5" style="text-align:center;">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">ID</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Pledge Date</th>
+                <th scope="col">Expire Date</th>
+                <th scope="col">Pledging Type</th>
+                <th scope="col">Handle</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in pledging%}
+            {% ifequal i.type_pledging 0 %} <tr style="color:red"> {%else%} {% ifequal i.type_pledging 2 %}
+            <tr style="color:blue">{% endifequal%}{% endifequal%}
+                <th scope="row">{{i.id}}</th>
+                <td>{{i.cus_id.first_name}}</td>
+                <td>{{i.cus_id.last_name}}</td>
+                <td>{{i.pledge_date|date:"d / m / Y"}}</td>
+                <td>{{i.expire_date|date:"d / m / Y"}}</td>
+                <td>{{i.type_pledging}}</td>
+                <td><a href="{% url 'view_pledging' pled_id=i.id%}" class="btn btn-primary mr-2"><i
+                            class="far fa-eye"></i></a><a href="{% url 'delete_pledging' pled_id=i.id%}"
+                        class="btn btn-danger"><i class="far fa-trash-alt"></i></a></td>
+            </tr>
+                {% endfor %}
+        </tbody>
+    </table> -->
+</div>
+
+{% endblock %}
