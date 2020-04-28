@@ -14,16 +14,13 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css.map'%}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://use.fontawesome.com/releases/v5.12.0/js/all.js"></script>
-    
     <script src="{% static 'js/jquery-3.4.1.min.js'%}"></script>
-    
     <script src="{% static 'js/bootstrap.min.js'%}"></script>
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
-    
     <style>
         /* kanit-regular - thai_latin */
         /* kanit-regular - thai_latin */
@@ -46,26 +43,19 @@
             url("{% static 'font/kanit-v5-thai_latin-regular.svg#Kanit'%}") format('svg');
             /* Legacy iOS */
         }
-
-        
-
-        /* Sticky footer styles
-        -------------------------------------------------- */
+        /* Sticky footer styles */
         html {
             position: relative;
             min-height: 100%;
         }
-
         .errorlist {
             color: red;
         }
-
         body {
             /* Margin bottom by footer height */
             margin-bottom: 60px;
             font-family: 'Kanit';
         }
-
         .wrap {
             height: auto;
             margin: 0 auto -80px;
@@ -76,17 +66,13 @@
             box-sizing: border-box;
             overflow: auto;
         }
-
-        html,
-        body {
+        html, body {
             height: 100%;
         }
-
         body {
             margin: 0px;
             padding: 0px;
         }
-
         .footer {
             position: relative;
             bottom: 0;
@@ -96,12 +82,9 @@
             /* Vertically center the text there */
             background-color: #f5f5f5;
             margin-top: 5%;
-
         }
     </style>
-
 </head>
-
 <body>
     <nav class="navbar navbar-expand-md navbar-dark" style="background-color: #03a9f4;">
         <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
@@ -113,11 +96,9 @@
                     <li class="nav-item ">
                         <a class="nav-link" href="{% url 'log' %}">ประวัติทำธุรกรรม</a>
                     </li>
-                    {% comment %}
                     <li class="nav-item ">
-                        <a class="nav-link" href="{% url 'payment' %}">รายการชำระ</a>
+                        <a class="nav-link" href="{% url 'log' %}">ประวัติทำธุรกรรม</a>
                     </li>
-                    {% endcomment %}
                     {%  if user.is_staff %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'customers' %}">ข้อมูลลูกค้า</a>
@@ -125,26 +106,11 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'edit_admin' admin_id=user.id%}">แก้ไขข้อมูล</a>
                         </li>
-                    {%  else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'inform_payment' %}">แจ้งชำระ</a>
-                        </li>
                     {% endif %}
-                    {% comment %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'log' %}">ดูประวัติ</a>
-                    </li>
-                    {% endcomment %}
-                {% endif %}
-                {% if not user.is_authenticated %}
-                    <li class="nav-item text-uppercase">
-                        <a class="nav-link" href="{% url 'login' %}">เข้าสู่ระบบ</a>
-                    </li>
-                {% else %}
                     <li class="nav-item text-uppercase">
                         <a class="nav-link" href="{% url 'logout' %}">ออกจากระบบ</a>
                     </li>
-                {% endif%}
+                {% endif %}
             </ul>
         </div>
     </nav>

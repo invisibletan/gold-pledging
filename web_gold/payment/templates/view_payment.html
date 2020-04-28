@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+    <div class="container">
+        <center>
+            <h3>รายละเอียดการต่อดอก</h3>
+        </center>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <table class="table mt-4" style="text-align: center;">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col" style="width: 10%">ID</th>
+                        <th scope="col">Detail</th>
+                        <th scope="col" style="width: 20%">Time<br>(month)</th>
+                        <th scope="col" style="width: 20%">Balance<br>(3%/month)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in detail %}
+                        <tr id={{ p.pledge_id }}>
+                            <td>{{ p.pledge_id }}</td>
+                            <td>
+                                {% for g in p.gold %}
+                                    <span>{{ g.goldtype }}หนัก {{ g.weight|stringformat:".2f" }}</span><br>
+                                {% endfor %}
+                                <span><b>ราคารวม:</b> {{ p.balance }}</span>
+                            </td>
+                            <td>
+                                {% if type == 'detail' %}
+                                    <input class="form-control text-center" type="number"
+                                    name="month" value="1" min="1"
+                                    onchange="changeAmount({{ p.pledge_id }})">
+                                {% elif type == 'inform' %}
+                                    <p>{{ p.month|stringformat:'d' }}</p>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if type == 'detail' %}
+                                    <p name="interest" hidden>{{ p.interest }}</p>
+                                    <input class="form-control text-center" type="text"
+                                    name="amount" value="{{ p.interest|stringformat:'.2f' }}" readonly>
+                                {% elif type == 'inform' %}
+                                    <p>{{ p.amount|stringformat:'.2f' }}</p>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    <tr id={{ p.pledge_id }}>
+                        <td colspan=3><p class="text-right pr-2">ราคารวม: </p></td>
+                        <td>
+                            <input class="form-control text-center" type="text" id='total'
+                            {% if type == 'inform' %}value={{ payment.total_amount|stringformat:'.2f' }}{% endif %} readonly>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <hr>
+                <center>
+                    {% if payment.picture %}
+                    <div name="image mb-4" class="row">
+                        <img class="mx-auto" src="{{ payment.picture.url }}" width="30%;" style="border: 1px solid black;">
+                    </div>
+                    {% endif %}
+                    {% if type == 'detail' %}
+                        <button class="btn btn-info btn-block w-50 mt-2" type="submit">ยืนยัน</button>
+                    {% elif type == 'inform' %}
+                        {% if user.is_staff and payment.status == 0 %}
+                            <div class="row mb-4">
+                                <a class="btn btn-success btn-block col mt-4 mx-2"
+                                    href="{% url 'approve_payment' payment_id=payment.id %}">Approve
+                                </a>
+                                <a class="btn btn-danger btn-block col mt-4 mx-2"
+                                    href="{% url 'reject_payment' payment_id=payment.id %}">Reject
+                                </a>
+                            </div>
+                        {% elif not user.is_staff %}
+                            {% if payment.status == 1 %}
+                                <h3 class="mt-4">รายการชำระของท่านได้รับการยืนยันแล้ว</h3>
+                            {% elif payment.status == 2 %}
+                                <h3 class="mt-4">รายการชำระของท่านถูกปฎิเสธการทำรายการ</h3>
+                            {% elif payment.picture %}
+                                <h3 class="mt-4">ท่านได้ส่งหลักฐานยืนยันเป็นที่เรียบร้อย กรุณารอผู้ดูแลระบบตรวจสอบ</h3>
+                            {% else %}
+                                <h3 class="mt-4">ส่งหลักฐานยืนยัน</h3>
+                                <input class="mt-2" type="file" name="picture">
+                                <button class="btn btn-info btn-block w-50 mt-4" type="submit">ส่งหลักฐาน</button>
+                            {% endif %}
+                        {% endif %}
+                    {% endif %}
+                </center>
+        </form>
+    </div>
+    {% if type == 'detail' %}
+        <script>
+            function updateTotalAmount() {
+                var total = 0.0
+                amountList = document.getElementsByName('amount');
+                for (i = 0; i < amountList.length; i++) {
+                    total += parseInt(amountList[i].value);
+                }
+                document.getElementById('total').value = total.toFixed(2);
+            }
+            updateTotalAmount();
+            function changeAmount(pledge_id) {
+                var month = document.getElementById(pledge_id).getElementsByTagName('input')[0].value;
+                var interest = document.getElementById(pledge_id).getElementsByTagName('p')[0].innerHTML;
+                document.getElementById(pledge_id).getElementsByTagName('input')[1].value = (month*interest).toFixed(2);
+                updateTotalAmount();
+            }
+        </script>
+    {% endif %}
+{% endblock %}

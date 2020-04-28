@@ -2,7 +2,9 @@ from django.contrib import admin
 from .models import *
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
+
 # Register your models here.
+
 class GoldAdmin(admin.ModelAdmin):
     list_display = ['id', 'pledging_id','weight', 'goldtype']
     list_per_page = 10

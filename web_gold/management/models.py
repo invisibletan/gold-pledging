@@ -1,10 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django_enumfield import enum
 from django.conf import settings
+from django_enumfield import enum
 from django.utils.translation import ugettext_lazy
 from django.core.validators import MinLengthValidator
+
 from datetime import timedelta, date
+
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -38,43 +40,37 @@ class Customer(models.Model):
     citizen_id = models.CharField(max_length=13,validators=[MinLengthValidator(13)], null=False, unique=True)
     email = models.EmailField(max_length=254, unique=True)
     dob = models.DateField(auto_now_add=False,blank=False)
- 
-
 
 class Pledging(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     cus_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
     pledge_balance = models.IntegerField(null=False)
     contract_term = models.IntegerField(null=False)
-    pledge_date = models.DateField(auto_now_add=True,blank=False,null=False)
-    expire_date = models.DateField(auto_now_add=False,null=True)
+    pledge_date = models.DateField(auto_now_add=True, blank=False, null=False)
+    expire_date = models.DateField(auto_now_add=False, null=True)
     type_pledging = enum.EnumField(PledgingType, default=PledgingType.in_contract)
     def save(self, *args, **kwargs):
         if not self.pk:
             self.expire_date = date.today() + timedelta(days=self.contract_term)
-            
         super(Pledging, self).save(*args, **kwargs)
-
-
+    def __str__(self):
+        return str(self.pk)
 
 class Gold(models.Model):
     pledging_id = models.ForeignKey(Pledging, on_delete=models.CASCADE)
-    weight = models.FloatField(blank=False,null=False)
+    weight = models.FloatField(blank=False, null=False)
     goldtype =  enum.EnumField(GoldType, default=GoldType.necklace)
 
 class Redeemed(Pledging):
-    
     first_name = models.CharField(null=False, max_length=255)
     last_name = models.CharField(null=False, max_length=255)
     citizen_id = models.CharField(max_length=13, null=False, unique=True)
-    redeem_date = models.DateField(auto_now_add=True,blank=False,null=False)
+    redeem_date = models.DateField(auto_now_add=True, blank=False, null=False)
 
 from payment.models import Trantype
+
 class Log(models.Model):
     cus_id = models.ForeignKey(Customer, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
-    datetime = models.DateTimeField(auto_now_add=True,blank=False,null=False)
+    datetime = models.DateTimeField(auto_now_add=True, blank=False, null=False)
     detail = enum.EnumField(Trantype, default=Trantype.re_contract)
-    
-
-

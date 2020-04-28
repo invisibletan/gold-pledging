@@ -2,7 +2,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django_enumfield import enum
 from management.models import *
+
 # Create your models here.
+
 class PaymentType(enum.Enum):
     online = 0
     offline = 1
@@ -34,14 +36,14 @@ class Trantype(enum.Enum):
     }
 
 class Payment(models.Model):
-    type_payment = enum.EnumField(PaymentType, default=PaymentType.offline)
+    type_payment = enum.EnumField(PaymentType, default=PaymentType.online)
     first_name = models.CharField(null=False, max_length=255)
     last_name = models.CharField(null=False, max_length=255)
     total_amount = models.IntegerField(null=False)
-    pay_date = models.DateField(auto_now_add=True,blank=False,null=False)
+    pay_date = models.DateField(auto_now_add=True, blank=False, null=False)
 
 class Online(Payment):
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT)
+    user_id = models.ForeignKey(User, on_delete=models.PROTECT, default=None, null=True)
     cus_id = models.ForeignKey(Customer, on_delete=models.PROTECT)
     status = enum.EnumField(Status, default=Status.wait)
     picture = models.ImageField(upload_to='payments/', default=None, null=True)
@@ -51,10 +53,12 @@ class Offline(Payment):
     cus_id = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
 class Transaction(models.Model):
-    payment_id = models.ForeignKey(Payment, on_delete=models.PROTECT)
+    payment_id = models.ForeignKey(Payment, on_delete=models.CASCADE, default=None, null=True)
+    pledging_id = models.ForeignKey(Pledging, on_delete=models.CASCADE)
     amount = models.IntegerField(null=False)
-    pledging_id = models.ForeignKey(Pledging, on_delete=models.PROTECT)
-    trantype = enum.EnumField(Trantype, default=Trantype.redeem)
+    trantype = enum.EnumField(Trantype, default=Trantype.re_contract)
 
-class Re_contract(Transaction):
-    start_date = models.DateField(auto_now_add=True,blank=False,null=False)
+class Recontract(models.Model):
+    pledging_id = models.ForeignKey(Pledging, on_delete=models.CASCADE)
+    transaction_id = models.ForeignKey(Transaction, on_delete=models.CASCADE)
+    start_date = models.DateField(auto_now_add=False, blank=False, null=False)

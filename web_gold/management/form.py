@@ -1,11 +1,13 @@
 from django import forms
 from django.forms import ModelForm, Select
 from django.forms.widgets import DateTimeInput, HiddenInput, Input
-from pkg_resources import require
-from django.contrib.auth.forms import UserCreationForm
-from .models import Customer, Gold, Pledging
+
 from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
+
+from .models import Customer, Gold, Pledging
+
 class CustomerForm(ModelForm):
     cus_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
     class Meta:
@@ -32,13 +34,12 @@ class CustomerForm(ModelForm):
         citizen_id = self.cleaned_data.get('citizen_id')
         cus_id = self.cleaned_data.get('cus_id')
         if ((Customer.objects.filter(email=email).exclude(pk=cus_id)).exists()):
-            self.add_error('email',"Email exists")
+            self.add_error('email', "Email exists")
         if not citizen_id.isdigit():
-            self.add_error('citizen_id',"Citizen id Digit Only!!") 
+            self.add_error('citizen_id', "Citizen id Digit Only!!") 
         if (Customer.objects.filter(citizen_id=citizen_id).exclude(pk=cus_id)).exists():
-            self.add_error('citizen_id',"Citizen id exists")
+            self.add_error('citizen_id', "Citizen id exists")
         return self.cleaned_data
-
 
 class PledgingForm(ModelForm):
     class Meta:
@@ -57,8 +58,9 @@ class PledgingForm(ModelForm):
             'pledge_balance' : 'ยอดจำนำ',
             'contract_term' : 'เวลาสัญญา ( เป็นวัน )',
             'pledge_date' : 'วันเริ่มทำสัญญา',
-            'expire_date' : 'วันหมดสัญญา'}
-        
+            'expire_date' : 'วันหมดสัญญา',
+        }
+
 class GoldForm(ModelForm):
     gold_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
     class Meta:
@@ -70,8 +72,8 @@ class GoldForm(ModelForm):
         }
         labels = {
             'weight' : 'น้ำหนักทอง',
-            'goldtype' : 'ประเภททอง'
-            }
+            'goldtype' : 'ประเภททอง',
+        }
 
 class AdminForm(UserCreationForm):
     admin_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
@@ -99,9 +101,9 @@ class AdminForm(UserCreationForm):
        username = self.cleaned_data.get('username')
        admin_id = self.cleaned_data.get('admin_id')
        if (User.objects.filter(email=email).exclude(pk=admin_id)).exists():
-             self.add_error('email',"Email exists")
+             self.add_error('email', "Email exists")
        if (User.objects.filter(username=username).exclude(pk=admin_id)).exists():
-             self.add_error('username',"Username exists")
+             self.add_error('username', "Username exists")
        return self.cleaned_data
 
     class Meta:
@@ -113,9 +115,9 @@ class AdminForm(UserCreationForm):
             'email', 
             'password1', 
             'password2', 
-            'admin_id'
+            'admin_id',
             ]
         labels = {
-        "password1": "password",
-        "password2":"comfilm"
-    }
+            "password1": "password",
+            "password2": "confirm",
+        }

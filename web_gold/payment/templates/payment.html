@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+    <div class="container">
+        <center>
+            <h3>รายการชำระ</h3>
+            <a class="btn btn-info btn-block w-50 my-4" href="{% url 'select_pledging' %}">แจ้งรายการชำระ</a>
+        </center>
+        <table class="table mt-4" style="text-align: center;">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" style="width: 10%">ID</th>
+                    {% if user.is_staff %}
+                        {% comment %} แสดงชื่อ-นามสกุลเพิ่ม {% endcomment %}
+                        <th scope="col">Name</th>
+                    {% endif %}
+                    <th scope="col">Paid Date</th>
+                    <th scope="col" style="width: 15%">Total Balance</th>
+                    <th scope="col" style="width: 15%">Status</th>
+                    <th scope="col" style="width: 10%">Handle</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in payment %}
+                    <tr>
+                        <td>{{ p.pk }}</td>
+                        {% if user.is_staff %}
+                            {% comment %} แสดงชื่อ-นามสกุลเพิ่ม {% endcomment %}
+                            <td>{{ p.first_name }} {{ p.last_name }}</td>
+                        {% endif %}
+                        <td>{{ p.pay_date|date:"d / m / Y" }}</td>
+                        <td>{{ p.total_amount|stringformat:".2f" }}</td>
+                        <td>{{ p.status }}</td>
+                        <td>
+                            <a class="btn btn-warning" href="{% url 'inform_payment' payment_id=p.pk %}">
+                                <i class="far fa-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

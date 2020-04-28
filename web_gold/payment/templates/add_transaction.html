@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+    <div class="container">
+    <center class='mb-4'>
+        <h3>เพิ่มธุรกรรม</h3>
+        <h5>{{ msg }}</h5>
+    </center>
+    <hr>
+        <form method="POST">
+            {% csrf_token %}
+            <div class="container mt-4 w-50">
+                {{ transaction_form.as_p}}
+                <div class="row mt-4">
+                    <label for="pledging_id" class="col">รหัสรายการจำนำ</label>
+                    <input name="pledging_id" type="text" class="form-control col" value="{{ pledging.id }}" readonly>
+                </div>
+                <div class="row mt-4">
+                    <label for="pledge_balance" class="col">ยอดจำนำ</label>
+                    <input id="pledge_balance" name="pledge_balance" type="text" class="form-control col" value="{{ pledging.pledge_balance }}" readonly>
+                </div>
+                <div class="row mt-4">
+                    <label for="trantype" class="col">รหัสรายการจำนำ</label>
+                    <select id="trantype" name="trantype" class="form-control col" value="{{ pledging.id }}" onchange="trantypeChangeValue()">
+                        <option value="0" select>ต่อดอก</option>
+                        <option value="1" select>ไถ่คืน</option>
+                        <option value="2" select>ผ่อนจ่าย</option>
+                        <option value="3" select>เอาเพิ่ม</option>
+                    </select>
+                </div>
+                <div class="row mt-4">
+                    <label for="month" class="col">จำนวนเดือน</label>
+                    <input id="month" name="month" type="number" class="form-control col" value="1" min="1" onchange="recontractChangeAmount()">
+                </div>
+                <div class="row mt-4">
+                    <label for="amount" class="col">จำนวนเงิน</label>
+                    <input id="amount" name="amount" type="number" class="form-control col" value="{{ amount|stringformat:'.2f' }}" onchange="onchangeAmount()" readonly>
+                </div>
+                <hr>
+                <div class="row mt-4">
+                    <button class="btn btn-info btn-block mt-4" type="submit">ยืนยัน</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script>
+        function recontractChangeAmount() {
+            var month = document.getElementsByName('month')[0].value;  // get month
+            var interest = {{ interest }};  // get interest
+            var trantype = document.getElementById('trantype').value; // get transaction type
+            // check type is recontract
+            if(trantype === "0") {
+                var amount = (interest*month).toFixed(2);  // compute recontract amount
+                document.getElementById('amount').value = amount;  // set amount
+            }
+        }
+        function trantypeChangeValue() {
+            var trantype = document.getElementById('trantype').value;  // get transaction type\\
+            document.getElementById('month').value = "";
+            document.getElementById('month').readOnly = true;
+            document.getElementById('amount').placeholder = "";
+            document.getElementById('amount').setAttribute("max", null);
+            document.getElementById('amount').setAttribute("min", null);
+            if(trantype === "0") {
+                document.getElementById('month').value = "1";
+                document.getElementById('month').readOnly = false;
+                recontractChangeAmount();
+            } else if(trantype === "1") {
+                var redeem_balance = {{ redeem }};
+                document.getElementById('amount').value = parseFloat(redeem_balance).toFixed(2);
+                document.getElementById('amount').readOnly = true;
+            } else if(trantype === "2") {
+                document.getElementById('amount').value = {{ pledging.pledge_balance }}-1;
+                document.getElementById('amount').setAttribute("max", {{ pledging.pledge_balance }});
+                document.getElementById('amount').readOnly = false;
+            } else if(trantype === "3") {
+                document.getElementById('amount').value = {{ pledging.pledge_balance }}+1;
+                document.getElementById('amount').setAttribute("min", {{ pledging.pledge_balance }});
+                document.getElementById('amount').placeholder = "มากกว่ายอดจำนำ";
+                document.getElementById('amount').readOnly = false;
+            }
+        }
+    </script>
+{% endblock %}

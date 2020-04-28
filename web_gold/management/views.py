@@ -26,8 +26,6 @@ from .serializers import CustomerSerializer, LogSerializer, PledgingSerializer
 
 # Create your views here.
 
-
-
 # from background_task import background
 # t = 0
 # text = 1
@@ -57,7 +55,6 @@ from .serializers import CustomerSerializer, LogSerializer, PledgingSerializer
 #         cus_list = return_list_dict(out_date_list)
 #         cus_list_today = return_list_dict(out_date_today_list)
 
-
 #         def sendmail(cus_list, chk):
 #             from_email = settings.EMAIL_HOST_USER
 #             for cus in cus_list:
@@ -68,7 +65,6 @@ from .serializers import CustomerSerializer, LogSerializer, PledgingSerializer
 #                     message = ", ".join([str(pledging["id"]) for pledging in cus_list[cus]])
 #                     message = 'รายการจำนำ รหัสที่ '+ message + ' ' + 'ครบกำหนดสัญญาแล้ว\rโทร : xxx-xxx-xxx'
 #                 email_list = [cus_list[cus][0]['cus_id__email']]
-                
 
 #                 send_mail(
 #                 subject='เรียนเพื่อทราบ',
@@ -84,8 +80,8 @@ from .serializers import CustomerSerializer, LogSerializer, PledgingSerializer
 #         out_date_today = out_date_today.update(type_pledging=0)
 #     t += 1
 
-            
 # update_queue_status()
+
 @login_required
 def index(request):
     if not request.user.is_authenticated:
@@ -162,7 +158,6 @@ def pledging_api(request):
 def customers_api(request):
     if request.method == 'GET':
         # find = request.query_params['find']
-       
         # cus = Customer.objects.filter(Q(first_name__icontains=find)|(Q(last_name__icontains=find))|(Q(id__icontains=find)))
         find = request.query_params['find'].split()
         find.append('') if find == [] else 0
@@ -226,7 +221,6 @@ def view_customer(request, cus_id):
 @login_required
 def view_pledging(request, pled_id):
     view_pled = Pledging.objects.get(pk=pled_id)
-    
     view_gold = Gold.objects.filter(pledging_id=pled_id)
     return render(request, 'view_pledging.html', context={'p': view_pled, 'gold': view_gold})
 
@@ -281,10 +275,8 @@ def add_pledging(request, customer_id):
     if request.method == 'POST':
         form = PledgingForm(request.POST)
         form2 = form2(request.POST)
-
         if form.is_valid() and form2.is_valid():
             pled = form.save()
-       
             for form in form2:
                 if form.cleaned_data.get('weight'):
                     gold = Gold.objects.create(
@@ -328,7 +320,6 @@ def edit_customer(request, cus_id):
             msg = 'pass'
         else:
             msg = 'no_pass'
-     
     else:
         form = CustomerForm(initial={
             'cus_id' : cus.id,
@@ -340,7 +331,6 @@ def edit_customer(request, cus_id):
             'dob' : cus.dob
         })
     return render(request, template_name='add_customer.html',context={'form': form, 'status':0, 'msg':msg})
-
 
 @login_required
 def edit_pledging(request, pled_id):
@@ -363,14 +353,12 @@ def edit_pledging(request, pled_id):
         form2 = form2(request.POST)
         print(form)
         if form.is_valid() and form2.is_valid():
-            
             pled.pledge_balance=request.POST.get('pledge_balance')
             pled.contract_term=request.POST.get('contract_term')
             if  date.today() !=date.today() + timedelta(days=int(pled.contract_term)):
                 pled.type_pledging=1
             pled.expire_date=pled.pledge_date + timedelta(days=int(pled.contract_term))
             pled.save()
-            
             for f in form2:
                 if f.cleaned_data.get('gold_id'):
                     if f.cleaned_data.get('weight'):
@@ -430,7 +418,6 @@ def edit_admin(request,admin_id):
             'first_name' : admin.first_name,
             'last_name' : admin.last_name,
             'email' : admin.email,
-            
         })
     context = {'form': form, 'msg':msg}
     return render(request, 'edit_admin.html', context)

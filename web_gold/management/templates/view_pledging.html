@@ -84,12 +84,13 @@
             </div>
             {% endfor %}
             {%  if user.is_staff %}    
-        </div>
-            <div style='display:flex'>
-            <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'edit_pledging' pled_id=p.id %}" class="btn btn-warning" ><i class="fas fa-edit"></i> แก้ไขรายการจำนำ</a>
-            <button style='flex-basis:0;flex-grow:1;flex-shrink:1' onclick="popup('pled')" class="btn btn-danger"><i class="far fa-trash-alt"></i> ลบรายการจำนำ</button>
-        </div>{%endif%}
-
+                </div>
+                    <div style='display:flex'>
+                    <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'add_transaction' pled_id=p.id %}" class="btn btn-success" ><i class="fas fa-folder-plus"></i> เพิ่มธุรกรรม</a>
+                    <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'edit_pledging' pled_id=p.id %}" class="btn btn-warning" ><i class="fas fa-edit"></i> แก้ไขรายการจำนำ</a>
+                    <button style='flex-basis:0;flex-grow:1;flex-shrink:1' onclick="popup('pled')" class="btn btn-danger"><i class="far fa-trash-alt"></i> ลบรายการจำนำ</button>
+                </div>
+            {% endif %}
     </div>
     <script>
         function popup(del) {
