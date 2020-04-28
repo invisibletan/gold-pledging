@@ -12,7 +12,7 @@ urlpatterns = [
     path('view_customer/<int:cus_id>', view_customer, name='view_customer'),
     path('delete_customer/<int:cus_id>', delete_customer, name='delete_customer'),
     # Pledging
-    path('pledging', pledging, name='pledging'),
+    path('', pledging, name='pledging'),
     path('add_pledging/<int:customer_id>', add_pledging, name='add_pledging'),
     path('view_pledging/<int:pled_id>', view_pledging, name='view_pledging'),
     path('delete_pledging/<int:pled_id>', delete_pledging, name='delete_pledging'),
