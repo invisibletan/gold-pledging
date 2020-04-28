@@ -349,7 +349,7 @@ def edit_pledging(request, pled_id):
     gold = Gold.objects.filter(pledging_id=pled_id)
     num = len(gold)
     data = []
-    form2 = formset_factory(GoldForm, max_num=num)
+    form2 = formset_factory(GoldForm, max_num=num, can_delete=True)
     for i in gold:
         gold_dict = {
             'pledging_id':pled_id,
@@ -373,10 +373,14 @@ def edit_pledging(request, pled_id):
             for f in form2:
                 if f.cleaned_data.get('gold_id'):
                     if f.cleaned_data.get('weight'):
-                        g = Gold.objects.get(pk=f.cleaned_data['gold_id'])
-                        g.weight = f.cleaned_data['weight']
-                        g.goldtype =  f.cleaned_data['goldtype']
-                        g.save()
+                        if f.cleaned_data['DELETE']:
+                            gold = Gold.objects.get(pk=f.cleaned_data.get('gold_id'))
+                            gold.delete()
+                        else:
+                            g = Gold.objects.get(pk=f.cleaned_data['gold_id'])
+                            g.weight = f.cleaned_data['weight']
+                            g.goldtype =  f.cleaned_data['goldtype']
+                            g.save()
                 else:
                     if f.cleaned_data.get('weight'):
                         gold = Gold.objects.create(

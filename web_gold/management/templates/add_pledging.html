@@ -33,104 +33,20 @@
     <script>
         let status = '{{status}}'
         if (status == '0') {
+            console.log(document.querySelector("input#id_form-0-DELETE"))
             var form_idx = $('#id_form-TOTAL_FORMS').val();
             console.log(form_idx)
             for (let i = 0; i < form_idx; i++) {
-                let a2 = document.createElement('div')
-                a2.className = "btn btn-danger  pull-right"
-                y = document.getElementById('id_form-' + i + '-gold_id').value
-                a2.setAttribute('del_id', y)
-                a2.addEventListener("click", popup)
-                var ww = document.createElement("BR");
-
-                let i2 = document.createElement('i')
-                i2.className = "far fa-trash-alt"
-                a2.append(i2)
-
-                x = document.getElementById('id_form-' + i + '-weight').parentElement
-
-                console.log(y)
-                $(a2).insertBefore(x);
-                $(ww).insertBefore(x);
-                $(ww).insertBefore(x);
+                let x = document.querySelector("input#id_form-"+i+"-DELETE")
+                console.log(x)
+                x.className = "form-check-input";
+                x.setAttribute("data-toggle", "toggle");
+                x.setAttribute("data-onstyle", "danger");
 
             }
         }
 
-        function popup() {
-            let button = event.currentTarget
-
-            const swalWithBootstrapButtons = Swal.mixin({
-                customClass: {
-                    confirmButton: 'btn btn-success ',
-                    cancelButton: 'btn btn-danger mr-5'
-                },
-                buttonsStyling: false
-            })
-
-            swalWithBootstrapButtons.fire({
-                title: 'คุณต้องการลบรายการนี้หรือไม่?',
-                text: "ถ้าคุณลบรายการนี้ จะไม่สามาถกู้คืนได้",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'ยืนยันการลบ',
-                cancelButtonText: 'ไม่ต้องการลบ',
-                reverseButtons: true
-            }).then((result) => {
-
-                if (result.value) {
-
-                    let id = button.getAttribute('del_id')
-                    console.log(button)
-                    console.log(id)
-                    axios.delete('/delete_gold/' + id)
-
-                        .then(function (response) {
-
-
-                            console.log(response.data);
-                        })
-                        .catch(function (error) {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Something went wrong!',
-                            }).then((result) => {
-                                if (result.value) {
-                                    location.reload();
-                                }
-                            })
-
-                            console.log(error);
-                        })
-                    swalWithBootstrapButtons.fire(
-                        'Deleted!',
-                        'การลบของคุณสำเร็จ',
-                        'success'
-                    ).then((result) => {
-                        let del = button.nextSibling
-                        let del2 = del.nextSibling
-                        let del3 = del2.nextSibling.nextSibling
-                        button.remove()
-                        del2.remove()
-                        del3.remove()
-                        del.remove()
-                        var form_idx = $('#id_form-TOTAL_FORMS').val();
-                        $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) - 1);
-                    })
-
-                } else if (
-                    /* Read more about handling dismissals below */
-                    result.dismiss === Swal.DismissReason.cancel
-                ) {
-                    swalWithBootstrapButtons.fire(
-                        'Cancelled',
-                        'คุณได้ทำการยกเลิกการลบ',
-                        'error'
-                    )
-                }
-            })
-        }
+       
 
         error_ul = document.getElementsByClassName("errorlist");
 
@@ -156,6 +72,9 @@
             var form_idx = $('#id_form-TOTAL_FORMS').val();
             $('#form_set').append($('#empty_form').html().replace(/__prefix__/g, form_idx));
             $('#id_form-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+            let x = document.querySelector("input#id_form-"+form_idx+"-DELETE").parentNode
+            x.style.visibility = "hidden";
+
         });
         let chk = '{{msg}}'
         let pled_id = '{{pled_id}}'

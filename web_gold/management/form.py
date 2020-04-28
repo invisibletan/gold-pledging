@@ -65,7 +65,7 @@ class GoldForm(ModelForm):
         fields = ['weight', 'goldtype']
         widgets = {
             'weight':Input(attrs={'class':'shadow-sm form-control'}),
-            'goldtype':Select(attrs={'class':'shadow-sm form-control mb-5'}),
+            'goldtype':Select(attrs={'class':'shadow-sm form-control'}),
         }
         labels = {
             'weight' : 'น้ำหนักทอง',
