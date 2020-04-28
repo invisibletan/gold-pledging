@@ -52,6 +52,7 @@
                       <th scope="col">Last Name</th>
                       <th scope="col">Pledge date</th>
                       <th scope="col">Expire date</th>
+                      <th scope="col" >Pledging Type</th>
                       <th scope="col">Handle</th>
                     </tr>
                   </thead>
@@ -63,6 +64,14 @@
                 <td>{{i.cus_id.last_name}}</td>
                 <td >{{i.pledge_date|date:"d / m / Y"}}</td>
                 <td >{{i.expire_date|date:"d / m / Y"}}</td>
+                
+                {% if i.type_pledging == 0 %}
+                    <td  ><span class='badge badge-danger' style="width:6rem;">{{i.type_pledging}}</span></td>
+                {% elif i.type_pledging == 1 %}
+                    <td ><span class='badge badge-primary'style="width:6rem;">{{i.type_pledging}}</span></td>
+                {% elif i.type_pledging == 2 %}
+                    <td ><span class='badge badge-success' style="width:6rem;">{{i.type_pledging}}</span></td>
+                {% endif%}
                 <td><a href="{% url 'view_pledging' pled_id=i.id%}" class="btn btn-primary mr-2" ><i class="far fa-eye"></i></a></td>
             </tr>
             {% endfor %}

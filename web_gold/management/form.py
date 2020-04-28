@@ -32,8 +32,6 @@ class CustomerForm(ModelForm):
         email = self.cleaned_data.get('email')
         citizen_id = self.cleaned_data.get('citizen_id')
         cus_id = self.cleaned_data.get('cus_id')
-        if ((Customer.objects.filter(email=email).exclude(pk=cus_id)).exists()):
-            self.add_error('email',"Email exists")
         if not citizen_id.isdigit():
             self.add_error('citizen_id',"Citizen id Digit Only!!") 
         if (Customer.objects.filter(citizen_id=citizen_id).exclude(pk=cus_id)).exists():

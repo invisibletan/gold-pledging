@@ -26,61 +26,62 @@ from .serializers import CustomerSerializer, LogSerializer, PledgingSerializer
 
 # Create your views here.
 
-# from background_task import background
-# t = 0
-# text = 1
-# sec = 17
-# mint = 3 if (text) else 60
-# hour = 1 if (text) else 60
-# day = 1 if (text) else 24
-# @background()
-# def update_queue_status():
-#     global t, sec, mint, hour, day
-#     if t%(sec*mint*hour*day) == 0:
-#         print(t//(sec*mint*hour*day))
-#         out_date = Pledging.objects.filter(expire_date__lte=date.today()+ timedelta(days=3),type_pledging=1).exclude(expire_date=date.today())
-#         out_date_today = Pledging.objects.filter(expire_date=date.today(),type_pledging=1)
+from background_task import background
+t = 0
+text = 0
+sec = 17
+mint = 3 if (text) else 60
+hour = 1 if (text) else 60
+day = 1 if (text) else 24
+@background()
+def update_queue_status(schedule=60):
+    global t, sec, mint, hour, day
+    print(t)
+    if t%(sec*mint*hour*day) == 0:
+        print('work at %d' %(t//(sec*mint*hour*day)))
+        out_date = Pledging.objects.filter(expire_date__lte=date.today()+ timedelta(days=3),type_pledging=1).exclude(expire_date=date.today())
+        out_date_today = Pledging.objects.filter(expire_date=date.today(),type_pledging=1)
 
-#         out_date_list =list((out_date.values('cus_id__email', 'cus_id__id', 'id', 'expire_date')))
-#         out_date_today_list =list((out_date_today.values('cus_id__email', 'cus_id__id', 'id', 'expire_date')))
-#         def return_list_dict(out_date_list):
-#             cus_list = dict()
-#             for od in out_date_list:
-#                 cus_id = od["cus_id__id"]
-#                 if cus_id in cus_list:
-#                     cus_list[cus_id].append(od)
-#                 else:
-#                     cus_list[cus_id] = [od]
-#             return cus_list
-#         cus_list = return_list_dict(out_date_list)
-#         cus_list_today = return_list_dict(out_date_today_list)
+        out_date_list =list((out_date.values('cus_id__email', 'cus_id__id', 'id', 'expire_date')))
+        out_date_today_list =list((out_date_today.values('cus_id__email', 'cus_id__id', 'id', 'expire_date')))
+        def return_list_dict(out_date_list):
+            cus_list = dict()
+            for od in out_date_list:
+                cus_id = od["cus_id__id"]
+                if cus_id in cus_list:
+                    cus_list[cus_id].append(od)
+                else:
+                    cus_list[cus_id] = [od]
+            return cus_list
+        cus_list = return_list_dict(out_date_list)
+        cus_list_today = return_list_dict(out_date_today_list)
 
-#         def sendmail(cus_list, chk):
-#             from_email = settings.EMAIL_HOST_USER
-#             for cus in cus_list:
-#                 if chk:
-#                     message = ", ".join(['รหัสที่ '+str(pledging["id"])+' กำลังจะครบกำหนดสัญญาในวันที่ '+str(pledging["expire_date"].strftime("%d/%m/%Y")) for pledging in cus_list[cus]])
-#                     message = 'รายการจำนำ '+ message + ' ' + '\rกรุณาชำระเงินในระยะเวลาที่กำหนด\rโทร : xxx-xxx-xxx'
-#                 else:
-#                     message = ", ".join([str(pledging["id"]) for pledging in cus_list[cus]])
-#                     message = 'รายการจำนำ รหัสที่ '+ message + ' ' + 'ครบกำหนดสัญญาแล้ว\rโทร : xxx-xxx-xxx'
-#                 email_list = [cus_list[cus][0]['cus_id__email']]
+        def sendmail(cus_list, chk):
+            from_email = settings.EMAIL_HOST_USER
+            for cus in cus_list:
+                if chk:
+                    message = ", ".join(['รหัสที่ '+str(pledging["id"])+' กำลังจะครบกำหนดสัญญาในวันที่ '+str(pledging["expire_date"].strftime("%d/%m/%Y")) for pledging in cus_list[cus]])
+                    message = 'รายการจำนำ '+ message + ' ' + '\rกรุณาชำระเงินในระยะเวลาที่กำหนด\rโทร : xxx-xxx-xxx'
+                else:
+                    message = ", ".join([str(pledging["id"]) for pledging in cus_list[cus]])
+                    message = 'รายการจำนำ รหัสที่ '+ message + ' ' + 'ครบกำหนดสัญญาแล้ว\rโทร : xxx-xxx-xxx'
+                email_list = [cus_list[cus][0]['cus_id__email']]
 
-#                 send_mail(
-#                 subject='เรียนเพื่อทราบ',
-#                 message= message ,
-#                 from_email=from_email,
-#                 recipient_list=email_list,
-#                 fail_silently=False)
-#                 print('ส่ง', message)
+                send_mail(
+                subject='เรียนเพื่อทราบ',
+                message= message ,
+                from_email=from_email,
+                recipient_list=email_list,
+                fail_silently=False)
+                print('ส่ง', message)
 
-#         sendmail(cus_list, 1)
-#         sendmail(cus_list_today, 0)
+        sendmail(cus_list, 1)
+        sendmail(cus_list_today, 0)
 
-#         out_date_today = out_date_today.update(type_pledging=0)
-#     t += 1
+        out_date_today = out_date_today.update(type_pledging=0)
+    t += 1
 
-# update_queue_status()
+update_queue_status(repeat=60)
 
 def my_login(request):
     context = {}

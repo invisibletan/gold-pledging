@@ -31,27 +31,30 @@
         </button>
     </form>
     <script>
-        var form_idx = $('#id_form-TOTAL_FORMS').val();
-        console.log(form_idx)
-        for (let i = 0; i < form_idx; i++) {
-            let a2 = document.createElement('div')
-            a2.className = "btn btn-danger  pull-right"
-            y = document.getElementById('id_form-' + i + '-gold_id').value
-            a2.setAttribute('del_id', y)
-            a2.addEventListener("click", popup)
-            var ww = document.createElement("BR");
+        let status = '{{status}}'
+        if (status == '0') {
+            var form_idx = $('#id_form-TOTAL_FORMS').val();
+            console.log(form_idx)
+            for (let i = 0; i < form_idx; i++) {
+                let a2 = document.createElement('div')
+                a2.className = "btn btn-danger  pull-right"
+                y = document.getElementById('id_form-' + i + '-gold_id').value
+                a2.setAttribute('del_id', y)
+                a2.addEventListener("click", popup)
+                var ww = document.createElement("BR");
 
-            let i2 = document.createElement('i')
-            i2.className = "far fa-trash-alt"
-            a2.append(i2)
+                let i2 = document.createElement('i')
+                i2.className = "far fa-trash-alt"
+                a2.append(i2)
 
-            x = document.getElementById('id_form-' + i + '-weight').parentElement
+                x = document.getElementById('id_form-' + i + '-weight').parentElement
 
-            console.log(y)
-            $(a2).insertBefore(x);
-            $(ww).insertBefore(x);
-            $(ww).insertBefore(x);
+                console.log(y)
+                $(a2).insertBefore(x);
+                $(ww).insertBefore(x);
+                $(ww).insertBefore(x);
 
+            }
         }
 
         function popup() {
