@@ -4,7 +4,7 @@
 <div class="container">
     <center>
         <h3>เลือกรายการจำนำที่ต้องการต่อดอก</h3>
-    <center>
+    </center>
     <form method="POST">
         {% csrf_token %}
         <table class="table mt-4" style="text-align: center;" id='myTable'>
@@ -20,7 +20,9 @@
             <tbody>
                 {% for p in pledging %}
                     <tr>
-                        <td><input class="form-check-input" type="checkbox" name="selected" value="{{ p.pk }}"></td>
+                        <td><input class="form-check-input" type="checkbox" data-toggle="toggle"
+                            data-onstyle="success" data-offstyle="danger" data-on="Selected" data-off="Unselected"
+                            name="selected" value="{{ p.pk }}"></td>
                         <td>{{ p.pk }}</td>
                         <td>
                             {% for p_id, g_list in gold.items %}

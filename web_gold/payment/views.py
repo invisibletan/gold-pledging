@@ -1,5 +1,6 @@
 from datetime import date, datetime, timedelta
 
+from django.contrib.auth.decorators import permission_required, login_required
 from django.shortcuts import redirect, render
 
 from management.models import Customer, Gold, Pledging, PledgingType, Log, Redeemed
@@ -96,6 +97,7 @@ def create_getmore_trans(transaction, user, amount, day):
 
 # Create your views here.
 
+@login_required
 def payment(request):
     if request.user.is_staff:
         context = {'payment': Online.objects.all().order_by('-pk')}
@@ -104,6 +106,7 @@ def payment(request):
         context = {'payment': Online.objects.filter(cus_id=customer).order_by('-pk')}
     return render(request, template_name='payment.html', context=context)
 
+@login_required
 def select_pledging(request):
     context = {}
     customer = Customer.objects.get(user_acc=request.user)
@@ -120,6 +123,7 @@ def select_pledging(request):
             pass
     return render(request, template_name='select_pledging.html', context=context)
 
+@login_required
 def detail_payment(request):
     """ detail before create payment (for customer only) """
     context = {'type': 'detail'}
@@ -166,6 +170,7 @@ def detail_payment(request):
             return redirect('inform_payment', payment.id)
     return render(request, template_name='view_payment.html', context=context)
 
+@login_required
 def inform_payment(request, payment_id):
     context = {'type': 'inform', 'detail': list(), 'payment': Online.objects.get(id=payment_id)}
     if request.user.is_staff:
@@ -193,6 +198,8 @@ def inform_payment(request, payment_id):
         return redirect('inform_payment', payment_id)
     return render(request, template_name='view_payment.html', context=context)
 
+@login_required
+@permission_required('payment.change_payment')
 def approve_payment(request, payment_id):
     payment = Online.objects.get(id=payment_id)
     payment.user_id = request.user
@@ -202,12 +209,16 @@ def approve_payment(request, payment_id):
         create_recontract_trans(transaction, request.user)
     return redirect('inform_payment', payment_id)
 
+@login_required
+@permission_required('payment.change_payment')
 def reject_payment(request, payment_id):
     payment = Online.objects.get(id=payment_id)
     payment.status = Status.reject
     payment.save()
     return redirect('inform_payment', payment_id)
 
+@login_required
+@permission_required('transaction.add_transaction')
 def add_transaction(request, pled_id):
     context = {'pledging': Pledging.objects.get(id=pled_id)}
     context['interest'] = context['pledging'].pledge_balance*RATE
@@ -246,6 +257,7 @@ def add_transaction(request, pled_id):
                 -(redeemed_price(context['pledging'])-context['pledging'].pledge_balance)
     return render(request, 'add_transaction.html', context=context)
 
+@login_required
 def detail_redeemed(request, pled_id):
     context = {'pledging': Pledging.objects.get(id=pled_id)}
     if request.method == 'POST':

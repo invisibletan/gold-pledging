@@ -136,12 +136,11 @@ def pledging_api(request):
             if e_date  != '' and e_date is  not None:
                 pledging = pledging.filter(pledge_date__lte=e_date)
         else:
-            print('wow')
             if s_date != '' and s_date is not None:
                 pledging = pledging.filter(expire_date__gte=s_date)
             if e_date  != '' and e_date is not None:
                 pledging = pledging.filter(expire_date__lte=e_date)
-        pledging = pledging.order_by('id')    
+        pledging = pledging.order_by('expire_date')
         serializer =  PledgingSerializer(pledging, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -180,7 +179,6 @@ def log_api(request):
         chk_get = int(request.query_params['chk_get'])
         s_date = request.query_params['s_date'].split('-')
         e_date = request.query_params['e_date'].split('-')
-
         log = log.filter(detail__in=[chk_add, chk_re, chk_redeem, chk_sla, chk_get])
         if '' not in s_date  and s_date is not None:
             log = log.filter(datetime__year__gte=s_date[0],datetime__month__gte=s_date[1],datetime__day__gte=s_date[2])
@@ -206,6 +204,7 @@ def log(request):
 
 
 @login_required
+@permission_required('customer.view_customer')
 def view_customer(request, cus_id):
     view_cus = Customer.objects.get(pk=cus_id)
     view_pledging = Pledging.objects.filter(cus_id=cus_id)
@@ -226,6 +225,7 @@ def view_pledging(request, pled_id):
     return render(request, 'view_pledging.html', context={'p': view_pled, 'gold': view_gold})
 
 @login_required
+@permission_required('customer.delete_customer')
 @csrf_exempt
 def delete_customer(request, cus_id):
     if request.method == 'DELETE':
@@ -234,6 +234,7 @@ def delete_customer(request, cus_id):
     return HttpResponse(status=200)
 
 @login_required
+@permission_required('pledging.delete_pledging')
 @csrf_exempt
 def delete_pledging(request, pled_id):
     if request.method == 'DELETE':
@@ -242,6 +243,7 @@ def delete_pledging(request, pled_id):
     return HttpResponse(status=200)
 
 @login_required
+@permission_required('customer.add_customer')
 def add_customer(request):
     msg = ''
     cus_id = ''
@@ -269,6 +271,7 @@ def add_customer(request):
     return render(request, template_name='add_customer.html',context={'form': form, 'status':1, 'msg':msg, 'cus_id':cus_id})
 
 @login_required
+@permission_required('pledging.add_pledging')
 def add_pledging(request, customer_id):
     msg = ''
     pled_id = ''
@@ -306,6 +309,7 @@ def add_pledging(request, customer_id):
     return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2, 'status':1, 'msg':msg, 'pled_id':pled_id})
 
 @login_required
+@permission_required('customer.change_customer')
 def edit_customer(request, cus_id):
     cus = Customer.objects.get(pk=cus_id)
     msg = ''
@@ -334,6 +338,7 @@ def edit_customer(request, cus_id):
     return render(request, template_name='add_customer.html',context={'form': form, 'status':0, 'msg':msg})
 
 @login_required
+@permission_required('pledging.change_pledging')
 def edit_pledging(request, pled_id):
     pled = Pledging.objects.get(pk=pled_id)
     gold = Gold.objects.filter(pledging_id=pled_id)
@@ -388,6 +393,7 @@ def edit_pledging(request, pled_id):
     return render(request, template_name='add_pledging.html',context={'form': form, 'form2': form2,'status':0, 'msg':msg, 'pled_id':pled_id})
 
 @login_required
+@permission_required('gold.delete_gold')
 @csrf_exempt
 def delete_gold(request, gold_id):
     if request.method == 'DELETE':
@@ -396,6 +402,7 @@ def delete_gold(request, gold_id):
     return HttpResponse(status=200)
 
 @login_required
+@permission_required('user.change_user')
 def edit_admin(request,admin_id):
     msg = ''
     admin = User.objects.get(pk=admin_id)

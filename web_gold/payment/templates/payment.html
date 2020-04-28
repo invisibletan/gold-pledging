@@ -4,12 +4,14 @@
     <div class="container">
         <center>
             <h3>รายการชำระ</h3>
-            <a class="btn btn-info btn-block w-50 my-4" href="{% url 'select_pledging' %}">แจ้งรายการชำระ</a>
+            {% if not user.is_staff %}
+                <a class="btn btn-warning btn-block w-25 my-4" href="{% url 'select_pledging' %}">แจ้งรายการชำระ</a>
+            {% endif %}
         </center>
-        <table class="table mt-4" style="text-align: center;">
+        <table class="table mt-4" style="text-align: center; background-color:white;">
             <thead class="thead-dark">
                 <tr>
-                    <th scope="col" style="width: 10%">ID</th>
+                    <th scope="col" style="width: 10%;">ID</th>
                     {% if user.is_staff %}
                         {% comment %} แสดงชื่อ-นามสกุลเพิ่ม {% endcomment %}
                         <th scope="col">Name</th>
@@ -30,9 +32,16 @@
                         {% endif %}
                         <td>{{ p.pay_date|date:"d / m / Y" }}</td>
                         <td>{{ p.total_amount|stringformat:".2f" }}</td>
-                        <td>{{ p.status }}</td>
                         <td>
-                            <a class="btn btn-warning" href="{% url 'inform_payment' payment_id=p.pk %}">
+                            <h5><span class="badge
+                            {% if p.status == 0 %} badge-warning
+                            {% elif p.status == 1 %} badge-success
+                            {% elif p.status == 2 %} badge-danger
+                            {% endif %} text-center" style="width: 8rem;">{{ p.status }}
+                            </span></h5>
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" href="{% url 'inform_payment' payment_id=p.pk %}">
                                 <i class="far fa-eye"></i>
                             </a>
                         </td>
