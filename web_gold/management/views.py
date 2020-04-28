@@ -21,7 +21,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.contrib.auth.decorators import permission_required, login_required
 from .form import AdminForm, CustomerForm, GoldForm, PledgingForm
-from .models import Customer, Gold, Log, Pledging
+from .models import Customer, Gold, Log, Pledging, Redeemed
 from .serializers import CustomerSerializer, LogSerializer, PledgingSerializer
 
 # Create your views here.
@@ -222,7 +222,11 @@ def view_pledging(request, pled_id):
             i.weight /= 4
             unit = 'บาท'
         i.weight = '%.2f กรัม (%.2f %s)' %(gold_g, i.weight, unit)
-    return render(request, 'view_pledging.html', context={'p': view_pled, 'gold': view_gold})
+    if view_pled.type_pledging == 2:
+        redeemed = Redeemed.objects.get(pledging_id=view_pled)
+    else:
+        redeemed = None
+    return render(request, 'view_pledging.html', context={'p': view_pled, 'gold': view_gold, 'redeemed': redeemed})
 
 @login_required
 @permission_required('customer.delete_customer')

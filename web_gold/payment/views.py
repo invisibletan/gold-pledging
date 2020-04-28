@@ -264,12 +264,8 @@ def detail_redeemed(request, pled_id):
         redeemed_form = RedeemedForm(request.POST)
         if redeemed_form.is_valid():
             redeemed = redeemed_form.save()
-            data = {
-                'first_name': redeemed.first_name,
-                'last_name': redeemed.last_name,
-                'citizen_id': redeemed.citizen_id,
-            }
-            create_redeem_trans(context['pledging'], request.user, data)
+            context['pledging'].type_pledging = 2
+            context['pledging'].save()
             log = Log.objects.create(user_id=request.user, detail=1, cus_id=context['pledging'].cus_id)
             context['msg'] = 'pass'
         else:

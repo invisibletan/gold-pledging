@@ -63,7 +63,6 @@
                 <td>{{i.cus_id.last_name}}</td>
                 <td >{{i.pledge_date|date:"d / m / Y"}}</td>
                 <td >{{i.expire_date|date:"d / m / Y"}}</td>
-                
                 <td><a href="{% url 'view_pledging' pled_id=i.id%}" class="btn btn-primary mr-2" ><i class="far fa-eye"></i></a></td>
             </tr>
             {% endfor %}

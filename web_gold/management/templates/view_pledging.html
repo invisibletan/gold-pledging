@@ -61,9 +61,6 @@
                 <div class='mb-3'>
                     <h4>ข้อมูลทองที่นำมาจำนำ</h4>
                 </div>
-
-
-
                 {% for i in gold %}
                 <div class="row">
                     <div class='col-3' style="text-align: right;">
@@ -80,19 +77,32 @@
                     </div>
                 </div>
                 {% endfor %}
-                {%  if user.is_staff %}
-            </div>
-            <div style='display:flex'>
-                {% if p.type_pledging == 1 %}
-                    <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'add_transaction' pled_id=p.id %}"
-                        class="btn btn-success"><i class="fas fa-edit"></i> ทำธุรกรรม</a>
+                {% if redeemed %}
+                    <hr>
+                    <div class='mb-3'>
+                        <h4>รายละเอียดผู้ไถ่คืน</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-6" style="text-align: right;"><p>ชื่อ - นามสกุล : </p></div>
+                        <div class="col-6" style="text-align: left;"><p>{{ redeemed.first_name }} {{ redeemed.last_name }}</p></div>
+                        <div class="col-6" style="text-align: right;"><p>รหัสประชาชน : </p></div>
+                        <div class="col-6" style="text-align: left;"><p>{{ redeemed.citizen_id }}</p></div>
+                        <div class="col-6" style="text-align: right;"><p>วันที่ไถ่คืน : </p></div>
+                        <div class="col-6" style="text-align: left;"><p>{{ redeemed.redeem_date|date:"d / m / Y" }}</p></div>
+                    </div>
                 {% endif %}
-                <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'edit_pledging' pled_id=p.id %}"
-                    class="btn btn-warning"><i class="fas fa-edit"></i> แก้ไขรายการจำนำ</a>
-                <button style='flex-basis:0;flex-grow:1;flex-shrink:1' onclick="popup('pled')" class="btn btn-danger"><i
-                        class="far fa-trash-alt"></i> ลบรายการจำนำ</button>
-            </div>{%endif%}
-
+                {% if user.is_staff %}
+                    <div style='display:flex'>
+                        {% if p.type_pledging == 1 %}
+                            <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'add_transaction' pled_id=p.id %}"
+                                class="btn btn-success"><i class="fas fa-edit"></i> ทำธุรกรรม</a>
+                        {% endif %}
+                        <a style='flex-basis:0;flex-grow:1;flex-shrink:1' href="{% url 'edit_pledging' pled_id=p.id %}"
+                            class="btn btn-warning"><i class="fas fa-edit"></i> แก้ไขรายการจำนำ</a>
+                        <button style='flex-basis:0;flex-grow:1;flex-shrink:1' onclick="popup('pled')" class="btn btn-danger"><i
+                                class="far fa-trash-alt"></i> ลบรายการจำนำ</button>
+                    </div>
+                {% endif %}
         </div>
         <script>
             function popup(del) {
