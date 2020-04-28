@@ -114,9 +114,11 @@
                             <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'edit_admin' admin_id=user.id%}"><i class="fa fa-users"></i> แก้ไขข้อมูล</a>
                         </li>
                     {% endif %}
-                    <li class="nav-item text-uppercase">
+                    <li class="nav-item">
                         <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'logout' %}"><i class="fa fa-power-off"></i> ออกจากระบบ</a>
                     </li>
+                {% else %}
+                    <li class="nav-item"><h3 style="color:#e6e64c;">ร้านทองลิ้มเซ่งเฮง</h3></li>
                 {% endif %}
             </ul>
         </div>

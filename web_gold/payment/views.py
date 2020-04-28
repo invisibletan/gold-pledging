@@ -259,7 +259,7 @@ def detail_redeemed(request, pled_id):
             }
             create_redeem_trans(context['pledging'], request.user, data)
             log = Log.objects.create(user_id=request.user, detail=1, cus_id=context['pledging'].cus_id)
-            return redirect('view_pledging', pled_id)
+            context['msg'] = 'pass'
         else:
             context['msg'] = 'not_pass'
     else:

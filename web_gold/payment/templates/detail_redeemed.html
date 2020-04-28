@@ -20,6 +20,18 @@
         $(error_ul[i]).insertAfter(error_ul[i].nextElementSibling);
     }
     var msg = '{{ msg }}';
+    var pled_id = '{{ pledging.id }}';
+    if (msg == 'pass') {
+        Swal.fire({
+            icon: 'success',
+            title: 'ไถ่คืนสำเร็จ',
+            showConfirmButton: false,
+            timer: 1500,
+        }).then((result) => {
+            var url = "{%url 'view_pledging' pled_id=0 %}".replace('0', pled_id);
+            document.location.href = url;
+        })
+    }
     if (msg == 'not_pass') {
         Swal.fire({
             icon: 'error',
