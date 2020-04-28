@@ -222,6 +222,14 @@ def view_customer(request, cus_id):
 def view_pledging(request, pled_id):
     view_pled = Pledging.objects.get(pk=pled_id)
     view_gold = Gold.objects.filter(pledging_id=pled_id)
+    for i in view_gold:
+        gold_g = i.weight
+        i.weight /= 3.8
+        unit = 'สลึง'
+        if i.weight > 4:
+            i.weight /= 4
+            unit = 'บาท'
+        i.weight = '%.2f กรัม (%.2f %s)' %(gold_g, i.weight, unit)
     return render(request, 'view_pledging.html', context={'p': view_pled, 'gold': view_gold})
 
 @login_required
