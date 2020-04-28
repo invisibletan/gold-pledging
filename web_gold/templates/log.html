@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<div class="container">
+
+    <center>
+        <div class="col mt-2">
+            <input id="find" type="text" name="text" class="shadow form-control ml-2 col-md-6" placeholder="Seacrh" value=''
+                onkeyup="showTable()">
+            <div class="form-check form-check-inline mt-4">
+                <input id="inlineCheckbox1" class="form-check-input" type="checkbox" data-toggle="toggle"
+                    data-style="mr-1 ml-5" data-onstyle="success" data-offstyle="secondary" onchange="showTable()"
+                    checked>
+                <label for="inlineCheckbox1" class="form-check-label">ทำรายการจำนำ</label>
+
+                <input id="inlineCheckbox2" class="form-check-input" type="checkbox" data-toggle="toggle"
+                    data-style="mr-1 ml-4" data-onstyle="success" data-offstyle="secondary" onchange="showTable()"
+                    checked>
+                <label for="inlineCheckbox2" class="form-check-label">ทำการต่อดอก</label>
+
+                <input id="inlineCheckbox3" class="form-check-input" type="checkbox" data-toggle="toggle"
+                    data-style="mr-1 ml-4" data-onstyle="success" data-offstyle="secondary" onchange="showTable()"
+                    checked>
+                <label for="inlineCheckbox3" class="form-check-label">ทำการไถ่คืน</label>
+
+                <input id="inlineCheckbox4" class="form-check-input" type="checkbox" data-toggle="toggle"
+                    data-style="mr-1 ml-4" data-onstyle="success" data-offstyle="secondary" onchange="showTable()"
+                    checked>
+                <label for="inlineCheckbox4" class="form-check-label">ทำการผ่อนจ่าย</label>
+
+                <input id="inlineCheckbox5" class="form-check-input" type="checkbox" data-toggle="toggle"
+                    data-style="mr-1 ml-4" data-onstyle="success" data-offstyle="secondary" onchange="showTable()"
+                    checked>
+                <label for="inlineCheckbox5" class="form-check-label">ทำการเอาเพิ่ม</label>
+            </div>
+        </div>
+        <div class="form-group row mt-5 ">
+            <div class="col-md-1 mr-0">
+                <i class='far fa-calendar-alt ' style="font-size: 2.3rem;"></i>
+            </div>
+
+
+            <label for="stratdate" class="col-md-2 col-form-label">ตั้งแต่วันที่ : </label>
+            <div class="col-md-3">
+                <input type="date" class="shadow form-control" id="stratdate">
+            </div>
+            <label for="enddate" class="col-md-2 col-form-label">ถึงวันที่ : </label>
+            <div class="col-md-3">
+                <input type="date" class="shadow form-control" id="enddate">
+            </div>
+            <div class="col-md-1">
+                <button type="button" class="btn btn-primary" onclick="showTable()"><i
+                        class='fas fa-search'></i></button>
+            </div>
+
+        </div>
+    </center>
+    <table class="rounded shadow table mt-4" style="text-align:center; background-color:white;">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Datetime</th>
+                <th scope="col">Detail</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script>
+        
+        function createThis(datetime, first_name_cus, last_name_cus, first_name_user, last_name_user, detail, length_data) {
+            tran = ['ทำการต่อดอก', 'ทำการไถ่คืน', 'ทำการผ่อนจ่าย', 'ทำการเอาเพิ่ม', 'ทำการนำทองมาจำนำ']
+            var tbody = document.getElementsByTagName('tbody')[0]
+
+            var row = tbody.insertRow(-1);
+            var cell1 = row.insertCell(-1);
+            var cell2 = row.insertCell(-1);
+            var time = datetime.split(/-|T|[.]/)
+            var time = `วันที่ : ${time[2]}/${time[1]}/${time[0]} เวลา : ${time[3].substring(0, time[3].length-3)} น.`
+            var txt = `${first_name_cus} ${last_name_cus} ${tran[detail]} ทำรายการโดย ${first_name_user} ${last_name_user}`
+            if (tbody.children.length > length_data) {
+                tbody.firstChild.remove()
+            }
+            cell1.append(time)
+            cell2.append(txt)
+
+
+        }
+        showTable()
+        function showTable() {
+            document.getElementsByTagName('tbody')[0].remove();
+            var table = document.getElementsByTagName('table')[0]
+            var tbody = document.createElement("TBODY");
+            table.append(tbody)
+            let s_date = document.getElementById('stratdate').value;
+            let e_date = document.getElementById('enddate').value;
+
+
+
+
+            let out_enum = 5
+            let chk_add = out_enum
+            let chk_re = out_enum
+            let chk_redeem = out_enum
+            let chk_sla = out_enum
+            let chk_get = out_enum
+            if ($('#inlineCheckbox1').prop('checked')) {
+                chk_add = 4
+            }
+            if ($('#inlineCheckbox2').prop('checked')) {
+                chk_re = 0
+            }
+            if ($('#inlineCheckbox3').prop('checked')) {
+                chk_redeem = 1
+            }
+            if ($('#inlineCheckbox4').prop('checked')) {
+                chk_sla = 2
+            }
+            if ($('#inlineCheckbox5').prop('checked')) {
+                chk_get = 3
+            }
+            var find = document.getElementById("find").value;
+            axios.get('/log_api', { params: { find: find, chk_add: chk_add, chk_re: chk_re, chk_redeem: chk_redeem, chk_sla: chk_sla, chk_get: chk_get, s_date: s_date, e_date: e_date } })
+
+                .then(function (response) {
+                    // handle success
+                    items = response.data
+
+                    items.forEach((item) => {
+                        let datetime = item.datetime
+                        let first_name_cus = item.first_name_cus
+                        let last_name_cus = item.last_name_cus
+                        let first_name_user = item.first_name_user
+                        let last_name_user = item.last_name_user
+                        let detail = item.detail
+                        createThis(datetime, first_name_cus, last_name_cus, first_name_user, last_name_user, detail, response.data.length)
+                    }
+                    )
+
+                    console.log(response.data);
+                })
+                .catch(function (error) {
+                    console.log(error);
+                })
+        }
+
+
+
+    </script>
+</div>
+{% endblock %}

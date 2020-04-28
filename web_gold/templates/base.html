@@ -20,6 +20,7 @@
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <style>
         /* kanit-regular - thai_latin */
@@ -72,6 +73,10 @@
         body {
             margin: 0px;
             padding: 0px;
+            background-image: url('{% static 'img/bg.jpg'%}');
+            background-size: cover;
+            background-color:rgba(0, 0, 0, 0.5);
+            
         }
         .footer {
             position: relative;
@@ -83,32 +88,34 @@
             background-color: #f5f5f5;
             margin-top: 5%;
         }
+        #lazy-hover:hover{
+            text-shadow:  0 0 10px rgb(200, 255, 1), 0 0 20px rgba(255, 251, 3, 0.658), 0 0 30px rgb(255, 217, 2), 0 0 30px rgba(255, 251, 0, 0.829);
+        }
     </style>
 </head>
-<body>
-    <nav class="navbar navbar-expand-md navbar-dark" style="background-color: #03a9f4;">
+<body style="background-color:rgba(0, 0, 0, 0.9);">
+    <nav class="navbar navbar-expand-md navbar-dark" style="background-image: linear-gradient(to right, #434343 0%, black 100%);">
         <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
             <ul class="navbar-nav ml-auto mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item ">
-                        <a class="nav-link" href="{% url 'pledging' %}">รายการจำนำ</a>
+                        <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'pledging' %}"><i class="fa fa-home"></i> รายการจำนำ</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'payment' %}">รายการชำระออนไลน์</a>
-                    </li>
+                        <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'payment' %}"><i class="fa fa-globe"></i> รายการชำระออนไลน์</a>
                     <li class="nav-item ">
-                        <a class="nav-link" href="{% url 'log' %}">ประวัติทำธุรกรรม</a>
+                        <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'log' %}"><i class="fa fa-list"></i> ประวัติทำธุรกรรม</a>
                     </li>
                     {%  if user.is_staff %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'customers' %}">ข้อมูลลูกค้า</a>
+                            <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'customers' %}"><i class="fa fa-user"></i> ข้อมูลลูกค้า</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'edit_admin' admin_id=user.id%}">แก้ไขข้อมูล</a>
+                            <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'edit_admin' admin_id=user.id%}"><i class="fa fa-users"></i> แก้ไขข้อมูล</a>
                         </li>
                     {% endif %}
                     <li class="nav-item text-uppercase">
-                        <a class="nav-link" href="{% url 'logout' %}">ออกจากระบบ</a>
+                        <a id="lazy-hover" class="nav-link" style="color:#e6e64c;" href="{% url 'logout' %}"><i class="fa fa-power-off"></i> ออกจากระบบ</a>
                     </li>
                 {% endif %}
             </ul>
