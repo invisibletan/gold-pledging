@@ -37,8 +37,8 @@ class Customer(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.PROTECT)
     first_name = models.CharField(null=False, max_length=255)
     last_name = models.CharField(null=False, max_length=255)
-    citizen_id = models.CharField(max_length=13,validators=[MinLengthValidator(13)], null=False, unique=True)
-    email = models.EmailField(max_length=254, unique=True)
+    citizen_id = models.CharField(max_length=13, validators=[MinLengthValidator(13)], null=False, unique=True)
+    email = models.EmailField(max_length=255)
     dob = models.DateField(auto_now_add=False,blank=False)
 
 class Pledging(models.Model):
@@ -61,10 +61,11 @@ class Gold(models.Model):
     weight = models.FloatField(blank=False, null=False)
     goldtype =  enum.EnumField(GoldType, default=GoldType.necklace)
 
-class Redeemed(Pledging):
+class Redeemed(models.Model):
+    pledging_id = models.ForeignKey(Pledging, on_delete=models.CASCADE)
     first_name = models.CharField(null=False, max_length=255)
     last_name = models.CharField(null=False, max_length=255)
-    citizen_id = models.CharField(max_length=13, null=False, unique=True)
+    citizen_id = models.CharField(max_length=13, validators=[MinLengthValidator(13)], null=False)
     redeem_date = models.DateField(auto_now_add=True, blank=False, null=False)
 
 from payment.models import Trantype

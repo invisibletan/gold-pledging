@@ -4,7 +4,6 @@
     <div class="container">
     <center class='mb-4'>
         <h3>เพิ่มธุรกรรม</h3>
-        <h5>{{ msg }}</h5>
     </center>
     <hr>
         <form method="POST">
@@ -33,8 +32,12 @@
                     <input id="month" name="month" type="number" class="form-control col" value="1" min="1" onchange="recontractChangeAmount()">
                 </div>
                 <div class="row mt-4">
+                    <label for="month" class="col">จำนวนวัน</label>
+                    <input id="day" name="day" type="number" class="form-control col" value="" min="1" readonly>
+                </div>
+                <div class="row mt-4">
                     <label for="amount" class="col">จำนวนเงิน</label>
-                    <input id="amount" name="amount" type="number" class="form-control col" value="{{ amount|stringformat:'.2f' }}" onchange="onchangeAmount()" readonly>
+                    <input id="amount" name="amount" type="number" class="form-control col" readonly>
                 </div>
                 <hr>
                 <div class="row mt-4">
@@ -44,6 +47,7 @@
         </form>
     </div>
     <script>
+        amount.value = '{{ interest|stringformat:".2f" }}';
         function recontractChangeAmount() {
             var month = document.getElementsByName('month')[0].value;  // get month
             var interest = {{ interest }};  // get interest
@@ -56,29 +60,64 @@
         }
         function trantypeChangeValue() {
             var trantype = document.getElementById('trantype').value;  // get transaction type\\
-            document.getElementById('month').value = "";
-            document.getElementById('month').readOnly = true;
-            document.getElementById('amount').placeholder = "";
-            document.getElementById('amount').setAttribute("max", null);
-            document.getElementById('amount').setAttribute("min", null);
+            var month = document.getElementById('month')
+            var day = document.getElementById('day')
+            var amount = document.getElementById('amount')
+            month.value = "";
+            month.readOnly = true;
+            day.value = "";
+            day.readOnly = true;
+            amount.removeAttribute("max");
+            amount.value = 0;
+            amount.readOnly = true;
             if(trantype === "0") {
-                document.getElementById('month').value = "1";
-                document.getElementById('month').readOnly = false;
+                month.value = "1";
+                month.readOnly = false;
                 recontractChangeAmount();
             } else if(trantype === "1") {
                 var redeem_balance = {{ redeem }};
-                document.getElementById('amount').value = parseFloat(redeem_balance).toFixed(2);
-                document.getElementById('amount').readOnly = true;
+                amount.value = parseFloat(redeem_balance).toFixed(2);
             } else if(trantype === "2") {
-                document.getElementById('amount').value = {{ pledging.pledge_balance }}-1;
-                document.getElementById('amount').setAttribute("max", {{ pledging.pledge_balance }});
-                document.getElementById('amount').readOnly = false;
+                day.value = "1";
+                day.readOnly = false;
+                amount.setAttribute("max", {{ pledging.pledge_balance }});
+                amount.readOnly = false;
             } else if(trantype === "3") {
-                document.getElementById('amount').value = {{ pledging.pledge_balance }}+1;
-                document.getElementById('amount').setAttribute("min", {{ pledging.pledge_balance }});
-                document.getElementById('amount').placeholder = "มากกว่ายอดจำนำ";
-                document.getElementById('amount').readOnly = false;
+                day.value = "1";
+                day.readOnly = false;
+                amount.readOnly = false;
             }
         }
+        var msg = '{{ msg }}';
+        var pled_id = '{{ pledging.id }}';
+        if (msg == 'pass') {
+        Swal.fire({
+            icon: 'success',
+            title: '{{ text }}',
+            showConfirmButton: false,
+            timer: 1500,
+        }).then((result) => {
+            var url = "{%url 'view_pledging' pled_id=0 %}".replace('0', pled_id);
+            document.location.href = url;
+        })} else if (msg == 'slacken') {
+        Swal.fire({
+            icon: 'success',
+            title: 'ผ่อนจ่ายสำเร็จ',
+            text: 'ลูกค้าต้องจ่ายเงินจำนวน ' + {{ result|stringformat:".2f" }} + ' บาท',
+            showConfirmButton: true,
+        }).then((result) => {
+            var url = "{%url 'view_pledging' pled_id=0 %}".replace('0', {{ new_pledge_id }});
+            document.location.href = url;
+        })} else if (msg == 'getmore') {
+        Swal.fire({
+            icon: 'success',
+            title: 'เอาเพิ่มสำเร็จ',
+            text: 'ลูกค้าได้รับเงินจำนวน ' + {{ result|stringformat:".2f" }} + ' บาท',
+            showConfirmButton: true,
+        }).then((result) => {
+            var url = "{%url 'view_pledging' pled_id=0 %}".replace('0', {{ new_pledge_id }});
+            document.location.href = url;
+        })
+    }
     </script>
 {% endblock %}

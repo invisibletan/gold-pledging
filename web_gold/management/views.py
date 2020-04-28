@@ -249,7 +249,7 @@ def add_customer(request):
         if form.is_valid():
             customer = form.save()
             # create user
-            user = User.objects.create_user(username = '%05d'%(customer.id))
+            user = User.objects.create_user(username = '%d'%(customer.id))
             user.set_password(customer.citizen_id)
             group = Group.objects.get(name='customer')
             user.groups.add(group)

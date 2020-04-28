@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models import Q
 
-from .models import Customer, Gold, Pledging
+from .models import Customer, Gold, Pledging, Redeemed
 
 class CustomerForm(ModelForm):
     cus_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
@@ -121,3 +121,24 @@ class AdminForm(UserCreationForm):
             "password1": "password",
             "password2": "confirm",
         }
+
+class RedeemedForm(ModelForm):
+    class Meta:
+        model = Redeemed
+        exclude = ['redeem_date']
+        widgets = {
+            'pledging_id': forms.HiddenInput(),
+            'first_name': Input(attrs={'class':'form-control'}),
+            'last_name': Input(attrs={'class':'form-control'}),
+            'citizen_id': Input(attrs={'class':'form-control'}),
+        }
+        labels = {
+            'first_name' : 'ชื่อ',
+            'last_name' : 'นามสกุล',
+            'citizen_id' : 'รหัสประชาชน',
+        }
+    def clean(self):
+        citizen_id = self.cleaned_data.get('citizen_id')
+        if not citizen_id.isdigit():
+            self.add_error('citizen_id', "This value must be digit only.")
+        return self.cleaned_data

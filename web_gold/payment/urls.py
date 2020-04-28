@@ -12,4 +12,5 @@ urlpatterns = [
     path('reject/<int:payment_id>', reject_payment, name='reject_payment'),
     # Transaction
     path('transaction/add/<int:pled_id>', add_transaction, name='add_transaction'),
+    path('redeem/detail/<int:pled_id>', detail_redeemed, name='detail_redeemed'),
 ]

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+<div class="container">
+    <center>
+        <h3>รายละเอียดการไถ่คืน</h3>
+    </center>
+    <form method="POST">
+        {% csrf_token %}
+        {{ redeemed_form.as_p }}
+        <hr>
+        <center>
+            <button class="btn btn-info btn-block w-50 mt-4" type="submit">ยืนยัน</button>
+        </center>
+    </form>
+</div>
+<script>
+    error_ul = document.getElementsByClassName("errorlist");
+    for (let i = 0; i < error_ul.length; i++){
+        $(error_ul[i]).insertAfter(error_ul[i].nextElementSibling);
+    }
+    var msg = '{{ msg }}';
+    if (msg == 'not_pass') {
+        Swal.fire({
+            icon: 'error',
+            title: 'ข้อมูลผิดพลาด',
+            text: 'กรุณากรอกข้อมูลให้ถูกต้อง',
+        })
+    }
+    </script>
+{% endblock %}
